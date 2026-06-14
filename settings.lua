@@ -1,0 +1,97 @@
+-- =====================================================================
+-- Settings
+-- =====================================================================
+hl.config({
+    cursor = {
+        no_hardware_cursors = true,
+        no_warps = true,
+    },
+    general = {
+        border_size = 2,
+        gaps_in = 3,
+        gaps_out = 8,
+        col = {
+            active_border = "rgba(b8cacaaa)",
+            inactive_border = "rgba(00000000)",
+        },
+        layout = "dwindle", -- ws 1-10; ws 11-20 use scrolling (see layouts.lua)
+        snap = { enabled = false },
+    },
+    binds = {
+        scroll_event_delay = 0,
+    },
+    master = {
+        new_status = "master",
+        mfact = 0.55,
+        orientation = "left",
+    },
+    dwindle = {
+        force_split                  = 0,
+        preserve_split               = false,
+        smart_split                  = false,
+        smart_resizing               = true,
+        permanent_direction_override = false,
+        special_scale_factor         = 1,
+        split_width_multiplier       = 1.0,
+        use_active_for_splits        = true,
+        default_split_ratio          = 1.0,
+        split_bias                   = 0,
+        precise_mouse_move           = false,
+    },
+    decoration = {
+        rounding = 8,
+        active_opacity = 1.0,
+        inactive_opacity = 1.0,
+        border_part_of_window = false,
+        blur = {
+            enabled = true,
+            popups = true,
+            passes = 2,
+            size = 8,
+            noise = 0.0117,
+            brightness = 0.8172,
+            contrast = 0.8916,
+            vibrancy = 0.1696,
+            special = true,
+            new_optimizations = true,
+        },
+        shadow = {
+            enabled = true,
+            range = 12,
+            render_power = 2,
+            offset = "2 3",
+            color = 0x70000000,
+        },
+    },
+    animations = {
+        enabled = true,
+    },
+    input = {
+        kb_layout = "us",
+        repeat_rate = 25,
+        repeat_delay = 600,
+        numlock_by_default = true,
+        follow_mouse = 0,
+        sensitivity = 0.0,
+        accel_profile = "flat",
+        natural_scroll = false,
+        left_handed = false,
+        touchpad = {
+            natural_scroll = true,
+            tap_to_click = true,
+            tap_and_drag = true,
+            drag_lock = true,
+            disable_while_typing = true,
+            middle_button_emulation = false,
+        },
+    },
+    misc = {
+        focus_on_activate = true,
+        vrr = 0,
+        background_color = "rgb(000000)",
+        disable_hyprland_logo = true,
+        disable_splash_rendering = true,
+        force_default_wallpaper = 0,
+        middle_click_paste = false,
+    },
+})
