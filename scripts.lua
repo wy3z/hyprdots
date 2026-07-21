@@ -199,16 +199,17 @@ end
 
 -- Walk the focused window through the scrolling layout in reading order, using
 -- only movewindow. Within its band it slides along the cross axis (l/r on a
--- vertical/"down" scroller, u/d on a horizontal one). At the band edge it
--- crosses to the adjacent band, then walks to that band's reading-order end:
--- the FRONT (leftmost) when going forward so the window lands at the start of
--- the next row, the BACK (rightmost) of the band above when going back. The
--- layout drops the crossed window at an unpredictable slot (it depends on the
--- window's cross position), so we step one swap at a time and re-read after each
--- move -- get_workspace_windows reflects the move immediately -- until nothing
--- in the band lies beyond us. At the first/last band a window that shares its
--- row expels into its own full-width row past the edge; one already alone clamps
--- (no wrap, no monitor jump).
+-- vertical/"down" scroller, u/d on a horizontal one). At the band edge a
+-- window that still shares its band expels into a full-width band of its own
+-- just past the edge; one already alone crosses into the adjacent band, then
+-- walks to that band's reading-order end: the FRONT (leftmost) when going
+-- forward so the window lands at the start of the next row, the BACK
+-- (rightmost) of the band above when going back. The layout drops the crossed
+-- window at an unpredictable slot (it depends on the window's cross position),
+-- so we step one swap at a time and re-read after each move --
+-- get_workspace_windows reflects the move immediately -- until nothing in the
+-- band lies beyond us. A lone window at the first/last band clamps (no wrap,
+-- no monitor jump).
 -- dir: "back" (left/up) | "forward" (right/down).
 function M.move_flow(dir)
     local ws = hl.get_active_workspace()
@@ -254,7 +255,16 @@ function M.move_flow(dir)
         return
     end
 
-    -- find the band just beyond this edge (nearest tape value past the current)
+    -- at the edge of a shared band: expel into a full-width band of its own just
+    -- past this edge instead of merging straight into the neighbouring band; the
+    -- next press, now alone, crosses into it.
+    if #seg > 1 then
+        hl.dispatch(hl.dsp.layout(dir == "back" and "consume_or_expel prev" or "consume_or_expel next"))
+        return
+    end
+
+    -- alone in its band: cross into the band just beyond this edge (nearest tape
+    -- value past the current); a lone window at the tape end has nowhere to go.
     local next_tape
     for _, w in ipairs(tiled) do
         local wt = tape(w)
@@ -264,15 +274,7 @@ function M.move_flow(dir)
             if wt > t + 10 and (not next_tape or wt < next_tape) then next_tape = wt end
         end
     end
-    if not next_tape then
-        -- no band beyond this edge: a window sharing its row expels into its own
-        -- full-width row past the edge; one already alone has nowhere to go, so
-        -- clamp. consume_or_expel only expels when the row is shared (#seg > 1).
-        if #seg > 1 then
-            hl.dispatch(hl.dsp.layout(dir == "back" and "consume_or_expel prev" or "consume_or_expel next"))
-        end
-        return
-    end
+    if not next_tape then return end -- clamp: no wrap, no monitor jump
 
     hl.dispatch(hl.dsp.window.move({ direction = secondary }))
     -- step toward the band's reading-order end until nothing lies beyond us

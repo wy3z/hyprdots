@@ -4,8 +4,8 @@
 hl.curve("niriExpo", { type = "bezier", points = { { 0.16, 1.0 }, { 0.30, 1.0 } } })  -- ease-out-expo
 hl.curve("niriQuad", { type = "bezier", points = { { 0.50, 1.0 }, { 0.89, 1.0 } } })  -- ease-out-quad
 hl.curve("niriCubic", { type = "bezier", points = { { 0.33, 1.0 }, { 0.68, 1.0 } } }) -- ease-out-cubic
-hl.curve("niriSpring", { type = "spring", mass = 1, stiffness = 75, dampening = 13 })
-hl.curve("niriSpringFast", { type = "spring", mass = 1, stiffness = 100, dampening = 16 })
+hl.curve("niriSpring", { type = "spring", mass = 1, stiffness = 675, dampening = 39 })
+hl.curve("niriSpringFast", { type = "spring", mass = 1, stiffness = 900, dampening = 48 })
 
 hl.animation({ leaf = "windowsIn", enabled = true, speed = 1.2, bezier = "niriExpo", style = "slide" })
 hl.animation({ leaf = "windowsOut", enabled = true, speed = 1.2, bezier = "niriQuad", style = "slide" })

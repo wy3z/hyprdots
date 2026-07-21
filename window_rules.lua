@@ -21,6 +21,14 @@ hl.window_rule({
     center      = true,
 })
 hl.window_rule({ match = { float = true }, animation = "popin 80%" })
+
+-- Electron context menus under XWayland are anonymous floating ARGB windows.
+-- Do not blur their translucent shadow margins.
+hl.window_rule({
+    match = { xwayland = true, float = true, class = "^$", title = "^$" },
+    no_blur = true,
+})
+
 hl.window_rule({ match = { workspace = "w[tv1]s[false]" }, border_size = 0 })
 
 -- Per-monitor starting column width for NEW windows on the scrolling layout
