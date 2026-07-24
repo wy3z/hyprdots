@@ -66,6 +66,47 @@ function M.wheel_focus(dir)
     hl.dispatch(hl.dsp.focus({ window = "address:" .. tiled[target].address }))
 end
 
+-- Cross-axis resizeactive on the scrolling layout: Hyprland picks a different
+-- border to move depending on whether the window has a "prev" neighbour in
+-- its band (see scrolling-resize-first-window-bug), which flips the sign of
+-- delta.x on a portrait band / delta.y on a landscape band for every window
+-- but the first. Detect that case from geometry and negate the cross-axis
+-- component so scroll direction always means the same thing regardless of
+-- position in the row. dwindle/master and the tape-axis component pass
+-- through unchanged.
+function M.wheel_resize(delta)
+    local ws = hl.get_active_workspace()
+    local cur = ws and hl.get_active_window()
+    if not ws or not cur or ws.tiled_layout ~= "scrolling" then
+        hl.dispatch(hl.dsp.window.resize({ x = delta.x, y = delta.y, relative = true }))
+        return
+    end
+
+    local mon = ws.monitor
+    local ew, eh = mon.width, mon.height
+    if mon.transform % 2 == 1 then ew, eh = eh, ew end
+    local portrait = eh > ew
+
+    local function cross(w) return portrait and w.at.x or w.at.y end
+    local function tape(w) return portrait and w.at.y or w.at.x end
+
+    local t, c = tape(cur), cross(cur)
+    local has_prev = false
+    for _, w in ipairs(hl.get_workspace_windows(ws.id)) do
+        if not w.floating and w.mapped and w.address ~= cur.address
+            and math.abs(tape(w) - t) < 10 and cross(w) < c then
+            has_prev = true
+            break
+        end
+    end
+
+    local dx, dy = delta.x, delta.y
+    if has_prev then
+        if portrait then dx = -dx else dy = -dy end
+    end
+    hl.dispatch(hl.dsp.window.resize({ x = dx, y = dy, relative = true }))
+end
+
 -- Register the 1-10 workspace switch/move binds plus next/prev cycling. Uses the
 -- split-monitor-workspaces plugin for per-monitor workspaces when it's loaded,
 -- else falls back to native GLOBAL workspaces (e.g. a stale .so after a Hyprland

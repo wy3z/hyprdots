@@ -144,15 +144,15 @@ hl.bind("SUPER + mouse:276", function() act.move_flow("back") end, { mouse = tru
 -- === Wheel (axisbind) ===
 -- Layout-aware focus along the wheel (scrolling layout = step the tape & clamp;
 -- dwindle/master = cycle all windows, wraps). See act.wheel_focus in scripts.lua.
-hl.bind("SUPER + mouse_up", function() act.wheel_focus("up") end)
-hl.bind("SUPER + mouse_down", function() act.wheel_focus("down") end)
-hl.bind("SUPER + CTRL + mouse_up", hl.dsp.focus({ monitor = "l" }))
-hl.bind("SUPER + CTRL + mouse_down", hl.dsp.focus({ monitor = "r" }))
-hl.bind("SUPER + ALT + mouse_up", hl.dsp.window.resize({ x = 100, y = 0, relative = true }), { repeating = false })
-hl.bind("SUPER + ALT + mouse_down", hl.dsp.window.resize({ x = -100, y = 0, relative = true }), { repeating = false })
-hl.bind("SUPER + ALT + CTRL + mouse_up", hl.dsp.window.resize({ x = 0, y = 100, relative = true }), { repeating = false })
-hl.bind("SUPER + ALT + CTRL + mouse_down", hl.dsp.window.resize({ x = 0, y = -100, relative = true }),
+hl.bind("SUPER + mouse_down", function() act.wheel_focus("up") end)
+hl.bind("SUPER + mouse_up", function() act.wheel_focus("down") end)
+hl.bind("SUPER + CTRL + mouse_down", hl.dsp.focus({ monitor = "l" }))
+hl.bind("SUPER + CTRL + mouse_up", hl.dsp.focus({ monitor = "r" }))
+hl.bind("SUPER + ALT + mouse_down", function() act.wheel_resize({ x = 100, y = 0 }) end, { repeating = false })
+hl.bind("SUPER + ALT + mouse_up", function() act.wheel_resize({ x = -100, y = 0 }) end, { repeating = false })
+hl.bind("SUPER + ALT + CTRL + mouse_down", function() act.wheel_resize({ x = 0, y = 100 }) end, { repeating = false })
+hl.bind("SUPER + ALT + CTRL + mouse_up", function() act.wheel_resize({ x = 0, y = -100 }) end,
     { repeating = false })
 -- swapcol moves the column toward the end of the tape (scroll up = next/right).
-hl.bind("SUPER + SHIFT + mouse_down", function() act.move_flow("back") end)
-hl.bind("SUPER + SHIFT + mouse_up", function() act.move_flow("forward") end)
+hl.bind("SUPER + SHIFT + mouse_up", function() act.move_flow("back") end)
+hl.bind("SUPER + SHIFT + mouse_down", function() act.move_flow("forward") end)
