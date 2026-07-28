@@ -22,11 +22,28 @@ hl.window_rule({
 })
 hl.window_rule({ match = { float = true }, animation = "popin 80%" })
 
+-- Keep the small Codex voice/control window distinct from the main Codex app.
+hl.window_rule({
+    match       = { class = "^codex-desktop$", title = "^Codex$" },
+    float       = true,
+    border_size = 0,
+    no_shadow   = true,
+    no_blur     = true,
+})
+
 -- Electron context menus under XWayland are anonymous floating ARGB windows.
 -- Do not blur their translucent shadow margins.
 hl.window_rule({
     match = { xwayland = true, float = true, class = "^$", title = "^$" },
     no_blur = true,
+})
+
+hl.window_rule({
+    name = "frameless-helium-pwas",
+    match = {
+        class = "^chrome-[a-p]{32}-Default$",
+    },
+    fullscreen_state = "0 2",
 })
 
 hl.window_rule({ match = { workspace = "w[tv1]s[false]" }, border_size = 0 })
