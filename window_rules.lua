@@ -38,13 +38,13 @@ hl.window_rule({
     no_blur = true,
 })
 
-hl.window_rule({
-    name = "frameless-helium-pwas",
-    match = {
-        class = "^chrome-[a-p]{32}-Default$",
-    },
-    fullscreen_state = "0 2",
-})
+-- hl.window_rule({
+--     name = "frameless-helium-pwas",
+--     match = {
+--         class = "^chrome-[a-p]{32}-Default$",
+--     },
+--     fullscreen_state = "0 2",
+-- })
 
 hl.window_rule({ match = { workspace = "w[tv1]s[false]" }, border_size = 0 })
 

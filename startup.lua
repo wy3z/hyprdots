@@ -20,4 +20,8 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("wl-paste --type image --watch cliphist store")
     hl.exec_cmd("sleep 1 && hyprctl dispatch focusmonitor DP-5")
     hl.exec_cmd("hyprpm reload")
+    -- Not hyprpm-managed (its hyprpm.toml has no commit pin for this Hyprland
+    -- branch yet), so load the manually-built .so directly. See
+    -- ~/.local/share/hypr-plugins/hyprland-scroll-overview/PATCH-NOTES.md.
+    hl.exec_cmd("hyprctl plugin load ~/.local/share/hypr-plugins/hyprland-scroll-overview/scrolloverview.so")
 end)

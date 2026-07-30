@@ -107,11 +107,8 @@ hl.bind("SUPER + S", function() act.toggle_layout() end)
 
 -- === Overview / window cycling ===
 hl.bind("SUPER + TAB", function()
-    local hymission = hl.plugin and hl.plugin.hymission
-    if not hymission or not act.has_hymission_windows() then return end
-
-    act.hymission_sync()
-    hymission.toggle()
+    local scrolloverview = hl.plugin and hl.plugin.scrolloverview
+    if scrolloverview then scrolloverview.overview("toggle") end
 end)
 hl.bind("ALT + Tab", hl.dsp.window.cycle_next({ next = true }))
 hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ prev = true }))
@@ -156,3 +153,31 @@ hl.bind("SUPER + ALT + CTRL + mouse_up", function() act.wheel_resize({ x = 0, y 
 -- swapcol moves the column toward the end of the tape (scroll up = next/right).
 hl.bind("SUPER + SHIFT + mouse_up", function() act.move_flow("back") end)
 hl.bind("SUPER + SHIFT + mouse_down", function() act.move_flow("forward") end)
+
+-- === Scroll Overview Binds ===
+hl.define_submap("scrolloverview", function()
+    -- Keyboard navigation
+    hl.bind("Left", hl.plugin.scrolloverview.navigate("left"))
+    hl.bind("Right", hl.plugin.scrolloverview.navigate("right"))
+    hl.bind("Up", hl.plugin.scrolloverview.navigate("up"))
+    hl.bind("Down", hl.plugin.scrolloverview.navigate("down"))
+
+    -- SUPER + wheel selects windows while plain wheel changes workspaces
+    hl.bind("SUPER + mouse_up", hl.plugin.scrolloverview.navigate("left"))
+    hl.bind("SUPER + mouse_down", hl.plugin.scrolloverview.navigate("right"))
+
+    -- Close/select controls
+    hl.bind("SUPER + TAB", hl.plugin.scrolloverview.overview("off"))
+    hl.bind("Return", hl.plugin.scrolloverview.overview("select"))
+    hl.bind("Escape", hl.plugin.scrolloverview.overview("off"))
+
+    -- Left click selects the hovered window or workspace, then closes
+    hl.bind("mouse:272", function()
+        hl.plugin.scrolloverview.overview("select")
+        hl.plugin.scrolloverview.window("select")
+        hl.plugin.scrolloverview.overview("off")
+    end, { mouse = true })
+
+    -- Middle click closes the hovered window
+    hl.bind("mouse:274", hl.plugin.scrolloverview.window("close"), { mouse = true })
+end)

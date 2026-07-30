@@ -147,18 +147,6 @@ function M.bind_workspaces()
     hl.bind("SUPER + Page_Up", function() cycle_workspace("prev") end)
 end
 
-function M.has_hymission_windows()
-    local mon = hl.get_active_monitor()
-    local filters = { mapped = true }
-    if mon then filters.monitor = mon.name end
-
-    for _, w in ipairs(hl.get_windows(filters)) do
-        if w.mapped and not w.hidden then return true end
-    end
-
-    return false
-end
-
 -- Toggle the active workspace between dwindle and the native scrolling layout, in
 -- place. `hyprctl keyword` won't re-tile a live workspace, so set a rule for just
 -- this workspace and re-apply via hl.config so only it re-tiles. Scroll direction
@@ -184,58 +172,6 @@ function M.toggle_layout()
         hl.timer(function() hl.config({ scrolling = { column_width = 0.333 } }) end,
             { timeout = 100, type = "oneshot" })
     end
-end
-
--- "wsid:winaddr" snapshot of what's focused, for change/settle detection below.
-local function active_state()
-    local ws = hl.get_active_workspace()
-    local win = hl.get_active_window()
-    return (ws and tostring(ws.id) or "") .. ":" .. (win and win.address or "")
-end
-
--- Force a real focus event (focus the other monitor and back) to wake Noctalia's
--- IPC; reload as a single-monitor fallback (its only signal there is configreloaded).
-local function wake_noctalia()
-    local cur = hl.get_active_monitor()
-    if not cur then return end
-    local other
-    for _, m in ipairs(hl.get_monitors()) do
-        if m.name ~= cur.name and not m.disabled then other = m; break end
-    end
-    if other then
-        hl.dispatch(hl.dsp.focus({ monitor = other.name }))
-        hl.dispatch(hl.dsp.focus({ monitor = cur.name }))
-    else
-        hl.exec_cmd("hyprctl reload")
-    end
-end
-
--- Hymission can change the focused workspace/window without emitting the Hyprland
--- IPC events Noctalia updates from, leaving its bar stale. Poll until focus
--- settles, then nudge Noctalia. In-process timer poll (the old shell loop spawned
--- hyprctl+jq ~40x/sec); the _polling flag is the single-instance guard (was flock).
-function M.hymission_sync()
-    if not M.has_hymission_windows() then return end
-    if M._polling then return end
-    M._polling = true
-    local settle_ticks, poll_ms, ticks_left = 2, 50, 400 -- ~20s budget
-    local last, pending, stable = active_state(), nil, 0
-    local function tick()
-        ticks_left = ticks_left - 1
-        if ticks_left <= 0 then M._polling = false; return end
-        local cur = active_state()
-        if cur ~= last then
-            last, pending, stable = cur, cur, 0
-        elseif pending then
-            stable = stable + 1
-            if stable >= settle_ticks then
-                wake_noctalia()
-                last, pending, stable = active_state(), nil, 0
-            end
-        end
-        hl.timer(tick, { timeout = poll_ms, type = "oneshot" })
-    end
-    hl.timer(tick, { timeout = poll_ms, type = "oneshot" })
 end
 
 -- Walk the focused window through the scrolling layout in reading order, using

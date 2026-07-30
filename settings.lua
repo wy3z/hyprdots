@@ -14,7 +14,7 @@ hl.config({
             active_border = "rgba(b8cacaaa)",
             inactive_border = "rgba(00000000)",
         },
-        layout = "dwindle", -- ws 1-10; ws 11-20 use scrolling (see layouts.lua)
+        layout = "dwindle", -- fallback for workspaces without a rule; ws 1-20 default to scrolling (see layouts.lua)
         snap = { enabled = false },
     },
     binds = {

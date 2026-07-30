@@ -10,22 +10,13 @@ function M.apply()
         smw.monitor_priority({ "DP-5", "HDMI-A-2" })
     end
 
-    local hymission = hl.plugin and hl.plugin.hymission
-    if hymission then
-        hl.config({
-            plugin = {
-                hymission = {
-                    layout_engine = 'natural',
-                    one_workspace_per_row = 1,
-                    overview_focus_follows_mouse = 1,
-                    multi_workspace_sort_recent_first = 1,
-                    toggle_switch_mode = 1,
-                    switch_toggle_auto_next = 0,
-                    bar_single_mission_control = 0,
-                    show_focus_indicator = 0,
-                    close_button_enabled = 0,
-                    only_active_monitor = 1,
-                },
+    local scrolloverview = hl.plugin and hl.plugin.scrolloverview
+    if scrolloverview then
+        scrolloverview.configure({
+            workspace_gap = 100,
+            input = {
+                scrolling_mode = 2,
+                scroll_event_delay = 30,
             },
         })
     end
