@@ -6,16 +6,6 @@
 -- binds.lua does `local act = require("scripts")`.
 local M = {}
 
--- Forward a scrolling-layout `layoutmsg`, but only on the scrolling layout:
--- colresize/consume/expel are unknown on master/dwindle and pop an error
--- notification, so guard on tiled_layout and no-op elsewhere.
-function M.scroller_msg(msg)
-    local ws = hl.get_active_workspace()
-    if ws and ws.tiled_layout == "scrolling" then
-        hl.dispatch(hl.dsp.layout(msg))
-    end
-end
-
 -- Layout-aware focus along the wheel.
 --   scrolling layout -> step PREV/NEXT along the tape over EVERY tiled window
 --     (incl. consumed/stacked), CLAMPing at the ends instead of wrapping or
@@ -147,6 +137,41 @@ function M.bind_workspaces()
     hl.bind("SUPER + Page_Up", function() cycle_workspace("prev") end)
 end
 
+-- Default column width for a scroller, matching the scrolling_width window
+-- rules in window_rules.lua: vertical/"down" scrollers 33%, horizontal/"right"
+-- 50%. Hyprland's scrolling:column_width is global-only, so anything that
+-- creates a column outside window-rule application (expel) has to re-apply it.
+function M.default_col_width(portrait)
+    return portrait and 0.333 or 0.5
+end
+
+-- Flip the focused column between two widths (fractions of the monitor) with
+-- `layoutmsg colresize <frac>`, so a column widens in place instead of the
+-- window going fullscreen -- the rest of the tape stays live, just scrolled
+-- off. Whichever of the two the column currently sits nearer to, it jumps to
+-- the other. No-op off the scrolling layout / on floating windows.
+function M.col_toggle(lo, hi)
+    local ws = hl.get_active_workspace()
+    local cur = ws and hl.get_active_window()
+    if not ws or not cur or ws.tiled_layout ~= "scrolling" or cur.floating then return end
+
+    -- colresize sizes the column along the TAPE axis: x on a "right"
+    -- (landscape) scroller, y on a "down" (portrait) one. Compare against the
+    -- monitor's effective span on that axis -- transforms 1/3/5/7 are 90/270-
+    -- rotated, so swap w/h first.
+    local mon = ws.monitor
+    local ew, eh = mon.width, mon.height
+    if mon.transform % 2 == 1 then ew, eh = eh, ew end
+    local portrait = eh > ew
+    local span = portrait and eh or ew
+    local size = portrait and cur.size.y or cur.size.x
+
+    -- Gaps/borders keep a column a little short of its nominal fraction, so
+    -- split at the midpoint rather than testing for equality.
+    local target = (size / span >= (lo + hi) / 2) and lo or hi
+    hl.dispatch(hl.dsp.layout(string.format("colresize %.3f", target)))
+end
+
 -- Toggle the active workspace between dwindle and the native scrolling layout, in
 -- place. `hyprctl keyword` won't re-tile a live workspace, so set a rule for just
 -- this workspace and re-apply via hl.config so only it re-tiles. Scroll direction
@@ -237,6 +262,10 @@ function M.move_flow(dir)
     -- next press, now alone, crosses into it.
     if #seg > 1 then
         hl.dispatch(hl.dsp.layout(dir == "back" and "consume_or_expel prev" or "consume_or_expel next"))
+        -- The expelled window lands in a column sized from the GLOBAL
+        -- scrolling:column_width (0.333) -- window rules only fire at map time,
+        -- so nothing else gives it the per-direction default. Re-apply it.
+        hl.dispatch(hl.dsp.layout(string.format("colresize %.3f", M.default_col_width(portrait))))
         return
     end
 
