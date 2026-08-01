@@ -57,8 +57,8 @@ hl.config({
             enabled = true,
             range = 12,
             render_power = 2,
-            offset = "2 3",
-            color = 0x70000000,
+            offset = { 2, 3 },
+            color = "rgba(00000070)",
         },
     },
     animations = {
