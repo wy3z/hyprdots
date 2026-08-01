@@ -3,7 +3,7 @@ local act = require("scripts")
 
 -- Reload / quit
 hl.bind("SUPER + CTRL + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
-hl.bind("SUPER + SHIFT + E", hl.dsp.exit())
+hl.bind("SUPER + CTRL + SHIFT + E", hl.dsp.exit())
 
 -- Apps
 hl.bind("SUPER + Return", hl.dsp.exec_cmd("ghostty"))
@@ -39,24 +39,24 @@ hl.bind("SUPER + Q", hl.dsp.window.close())
 hl.bind("SUPER + T", hl.dsp.window.float({ action = "toggle" }))
 hl.bind("SUPER + SHIFT + T", hl.dsp.window.pin()) -- pin (floating only)
 hl.bind("SUPER + C", hl.dsp.window.center())
-hl.bind("SUPER + F", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
+hl.bind("SUPER + ALT + F", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
 hl.bind("SUPER + SHIFT + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 
 -- Focus
-hl.bind("SUPER + H", hl.dsp.focus({ direction = "left" }))
-hl.bind("SUPER + J", hl.dsp.focus({ direction = "down" }))
-hl.bind("SUPER + K", hl.dsp.focus({ direction = "up" }))
-hl.bind("SUPER + L", hl.dsp.focus({ direction = "right" }))
+hl.bind("SUPER + A", hl.dsp.focus({ direction = "left" }))
+hl.bind("SUPER + S", hl.dsp.focus({ direction = "down" }))
+hl.bind("SUPER + W", hl.dsp.focus({ direction = "up" }))
+hl.bind("SUPER + D", hl.dsp.focus({ direction = "right" }))
 hl.bind("SUPER + Left", hl.dsp.focus({ direction = "left" }))
 hl.bind("SUPER + Down", hl.dsp.focus({ direction = "down" }))
 hl.bind("SUPER + Up", hl.dsp.focus({ direction = "up" }))
 hl.bind("SUPER + Right", hl.dsp.focus({ direction = "right" }))
 
 -- Move / swap
-hl.bind("SUPER + SHIFT + H", hl.dsp.window.move({ direction = "l" }))
-hl.bind("SUPER + SHIFT + J", hl.dsp.window.move({ direction = "d" }))
-hl.bind("SUPER + SHIFT + K", hl.dsp.window.move({ direction = "u" }))
-hl.bind("SUPER + SHIFT + L", hl.dsp.window.move({ direction = "r" }))
+hl.bind("SUPER + SHIFT + A", hl.dsp.window.move({ direction = "l" }))
+hl.bind("SUPER + SHIFT + S", hl.dsp.window.move({ direction = "d" }))
+hl.bind("SUPER + SHIFT + W", hl.dsp.window.move({ direction = "u" }))
+hl.bind("SUPER + SHIFT + D", hl.dsp.window.move({ direction = "r" }))
 hl.bind("SUPER + SHIFT + Left", hl.dsp.window.move({ direction = "l" }))
 hl.bind("SUPER + SHIFT + Down", hl.dsp.window.move({ direction = "d" }))
 hl.bind("SUPER + SHIFT + Up", hl.dsp.window.move({ direction = "u" }))
@@ -66,30 +66,30 @@ hl.bind("SUPER + SHIFT + Right", hl.dsp.window.move({ direction = "r" }))
 act.bind_workspaces()
 
 -- Monitors
-hl.bind("SUPER + CTRL + H", hl.dsp.focus({ monitor = "l" }))
-hl.bind("SUPER + CTRL + L", hl.dsp.focus({ monitor = "r" }))
 hl.bind("SUPER + CTRL + Left", hl.dsp.focus({ monitor = "l" }))
 hl.bind("SUPER + CTRL + Right", hl.dsp.focus({ monitor = "r" }))
-hl.bind("SUPER + SHIFT + CTRL + H", hl.dsp.window.move({ monitor = "l" }))
-hl.bind("SUPER + SHIFT + CTRL + L", hl.dsp.window.move({ monitor = "r" }))
+hl.bind("SUPER + Home", hl.dsp.focus({ monitor = "l" }))
+hl.bind("SUPER + End", hl.dsp.focus({ monitor = "r" }))
+hl.bind("SUPER + SHIFT + CTRL + A", hl.dsp.window.move({ monitor = "l" }))
+hl.bind("SUPER + SHIFT + CTRL + D", hl.dsp.window.move({ monitor = "r" }))
 hl.bind("SUPER + SHIFT + CTRL + Left", hl.dsp.window.move({ monitor = "l" }))
 hl.bind("SUPER + SHIFT + CTRL + Right", hl.dsp.window.move({ monitor = "r" }))
-hl.bind("SUPER + CTRL + 1", hl.dsp.window.move({ monitor = "HDMI-A-2" }))
-hl.bind("SUPER + CTRL + 2", hl.dsp.window.move({ monitor = "DP-5" }))
+hl.bind("SUPER + SHIFT + CTRL + 1", hl.dsp.window.move({ monitor = "HDMI-A-2" }))
+hl.bind("SUPER + SHIFT + CTRL + 2", hl.dsp.window.move({ monitor = "DP-5" }))
 -- Send to the other monitor as a new column.
 hl.bind("SUPER + SHIFT + Tab", hl.dsp.window.move({ monitor = "+1" }))
 
 -- Scrolling layout
-hl.bind("SUPER + R", function()
+hl.bind("SUPER + F", function()
     act.col_toggle(0.5, 1.0)
 end) -- 50% <-> 100%
-hl.bind("SUPER + SHIFT + R", function()
+hl.bind("SUPER + R", function()
     act.col_toggle(0.333, 0.75)
 end) -- 33% <-> 75%
-hl.bind("SUPER + equal", hl.dsp.window.resize({ x = 50, y = 0, relative = true }), { repeating = true })
-hl.bind("SUPER + minus", hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
-hl.bind("SUPER + SHIFT + equal", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
-hl.bind("SUPER + SHIFT + minus", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
+hl.bind("SUPER + ALT + equal", hl.dsp.window.resize({ x = 50, y = 0, relative = true }), { repeating = true })
+hl.bind("SUPER + ALT + minus", hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
+hl.bind("SUPER + ALT + CTRL + equal", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
+hl.bind("SUPER + ALT + CTRL + minus", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
 -- Move through rows in reading order.
 hl.bind("SUPER + bracketleft", function()
     act.move_flow("back")
@@ -99,7 +99,7 @@ hl.bind("SUPER + bracketright", function()
 end)
 
 -- Layout toggle
-hl.bind("SUPER + S", function()
+hl.bind("SUPER + L", function()
     act.toggle_layout()
 end)
 
@@ -107,6 +107,13 @@ end)
 hl.bind("SUPER + TAB", function()
     local scrolloverview = hl.plugin and hl.plugin.scrolloverview
     if scrolloverview then
+        local monitor = hl.get_active_monitor()
+        if monitor then
+            local width, height = monitor.width, monitor.height
+            if monitor.transform % 2 == 1 then width, height = height, width end
+            local layout = height > width and "horizontal" or "vertical"
+            hl.config({ plugin = { scrolloverview = { layout = layout } } })
+        end
         scrolloverview.overview("toggle")
     end
 end)
@@ -114,24 +121,25 @@ hl.bind("ALT + Tab", hl.dsp.window.cycle_next({ next = true }))
 hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ prev = true }))
 
 -- Floating window resize
-hl.bind("SUPER + ALT + K", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
-hl.bind("SUPER + ALT + J", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
-hl.bind("SUPER + ALT + H", hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
-hl.bind("SUPER + ALT + L", hl.dsp.window.resize({ x = 50, y = 0, relative = true }), { repeating = true })
+hl.bind("SUPER + ALT + S", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
+hl.bind("SUPER + ALT + W", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
+hl.bind("SUPER + ALT + A", hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
+hl.bind("SUPER + ALT + D", hl.dsp.window.resize({ x = 50, y = 0, relative = true }), { repeating = true })
 hl.bind("SUPER + ALT + Up", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
 hl.bind("SUPER + ALT + Down", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
 hl.bind("SUPER + ALT + Left", hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
 hl.bind("SUPER + ALT + Right", hl.dsp.window.resize({ x = 50, y = 0, relative = true }), { repeating = true })
 
 -- Screenshots
-hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("noctalia msg screenshot-region"))
-hl.bind("Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen")) -- focused monitor
+hl.bind("Print", hl.dsp.exec_cmd("noctalia msg screenshot-region"))
+hl.bind("ALT +Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen")) -- focused monitor
 hl.bind("CTRL + Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen pick")) -- multi-monitor picker
-hl.bind("ALT + Print", hl.dsp.exec_cmd("noctalia msg screenshot-region"))
 
 -- Mouse drag
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
+hl.bind("SUPER + mouse:274", hl.dsp.window.float({ action = "toggle" }), { mouse = true })
+hl.bind("SUPER + SHIFT + mouse:274", hl.dsp.window.pin(), { mouse = true })
 -- Side buttons mirror SUPER + [ / ].
 hl.bind("SUPER + mouse:275", function()
     act.move_flow("forward")
@@ -147,8 +155,8 @@ end)
 hl.bind("SUPER + mouse_up", function()
     act.wheel_focus("down")
 end)
-hl.bind("SUPER + CTRL + mouse_down", hl.dsp.focus({ monitor = "l" }))
-hl.bind("SUPER + CTRL + mouse_up", hl.dsp.focus({ monitor = "r" }))
+hl.bind("SUPER + CTRL + mouse_down", hl.dsp.focus({ monitor = "r" }))
+hl.bind("SUPER + CTRL + mouse_up", hl.dsp.focus({ monitor = "l" }))
 hl.bind("SUPER + ALT + mouse_down", function()
     act.wheel_resize({ x = 100, y = 0 })
 end, { repeating = false })
@@ -187,6 +195,7 @@ local function define_scrolloverview_submap()
                 scrolloverview.navigate(direction)
             end
         end
+        -- Use the axis perpendicular to the overview layout to cycle windows.
         hl.bind("SUPER + mouse_up", navigate_overview_wheel("up", "left"))
         hl.bind("SUPER + mouse_down", navigate_overview_wheel("down", "right"))
         hl.bind("SUPER + TAB", scrolloverview.overview("off"))

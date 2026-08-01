@@ -102,11 +102,40 @@ function M.bind_workspaces()
         end)
     end
     local function cycle_workspace(dir)
+        local active = hl.get_active_workspace()
+        local monitor = hl.get_active_monitor()
+        if not active or not monitor then return end
+
+        local occupied = {}
+        for _, ws in ipairs(hl.get_workspaces()) do
+            if ws.id > 0 and ws.windows > 0 and ws.monitor and ws.monitor.name == monitor.name then
+                occupied[#occupied + 1] = ws
+            end
+        end
+        if #occupied == 0 then return end
+
+        table.sort(occupied, function(a, b) return a.id < b.id end)
+
+        local target
+        if dir == "next" then
+            for _, ws in ipairs(occupied) do
+                if ws.id > active.id then target = ws; break end
+            end
+            target = target or occupied[1]
+        else
+            for i = #occupied, 1, -1 do
+                if occupied[i].id < active.id then target = occupied[i]; break end
+            end
+            target = target or occupied[#occupied]
+        end
+        if target.id == active.id then return end
+
         local smw = hl.plugin and hl.plugin.split_monitor_workspaces
         if smw then
-            smw.cycle_workspaces(dir)
+            local monitor_workspace = ((target.id - 1) % 10) + 1
+            smw.workspace(tostring(monitor_workspace))
         else
-            hl.dispatch(hl.dsp.focus({ workspace = dir == "next" and "e+1" or "e-1" }))
+            hl.dispatch(hl.dsp.focus({ workspace = target.id }))
         end
     end
     hl.bind("SUPER + U", function() cycle_workspace("next") end)
