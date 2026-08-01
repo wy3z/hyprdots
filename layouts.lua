@@ -9,6 +9,8 @@ end
 for ws = 11, 20 do
     hl.workspace_rule({
         workspace = tostring(ws),
+        -- Portrait monitor: display as 1-10 instead of 11-20.
+        default_name = tostring(ws - 10),
         layout = "scrolling",
         layout_opts = { direction = "down" }
     })

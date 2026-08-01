@@ -11,6 +11,7 @@ function M.apply()
     if scrolloverview then
         scrolloverview.configure({
             workspace_gap = 100,
+            hide_empty_workspaces = true,
             input = {
                 scrolling_mode = 2,
                 scroll_event_delay = 30,

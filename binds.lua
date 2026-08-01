@@ -104,6 +104,7 @@ hl.bind("SUPER + L", function()
 end)
 
 -- Overview / window cycling
+local overview_layout
 hl.bind("SUPER + TAB", function()
     local scrolloverview = hl.plugin and hl.plugin.scrolloverview
     if scrolloverview then
@@ -112,9 +113,18 @@ hl.bind("SUPER + TAB", function()
             local width, height = monitor.width, monitor.height
             if monitor.transform % 2 == 1 then width, height = height, width end
             local layout = height > width and "horizontal" or "vertical"
+            if layout == overview_layout then
+                scrolloverview.overview("toggle")
+                return
+            end
+            overview_layout = layout
             hl.config({ plugin = { scrolloverview = { layout = layout } } })
         end
-        scrolloverview.overview("toggle")
+        -- Let the config update land before the overview snapshots its layout.
+        hl.timer(function()
+            local plugin = hl.plugin and hl.plugin.scrolloverview
+            if plugin then hl.dispatch(plugin.overview("toggle")) end
+        end, { timeout = 1, type = "oneshot" })
     end
 end)
 hl.bind("ALT + Tab", hl.dsp.window.cycle_next({ next = true }))
