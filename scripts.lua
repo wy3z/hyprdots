@@ -1,20 +1,12 @@
--- =====================================================================
--- Scripts
--- =====================================================================
-
--- Reusable bind actions (in-process Lua, no subprocess/hyprctl/jq).
--- binds.lua does `local act = require("scripts")`.
 local M = {}
 
--- Layout-aware focus along the wheel.
---   scrolling layout -> step PREV/NEXT along the tape over EVERY tiled window
---     (incl. consumed/stacked), CLAMPing at the ends instead of wrapping or
---     jumping monitor. Tape order follows the monitor's effective orientation
---     (transforms 1/3/5/7 are 90/270-rotated, so swap w/h first):
---       landscape -> x-major (along tape, then down consumed)
---       portrait  -> y-major (down tape, then across consumed)
---   dwindle/master   -> cycle every window on the workspace (wraps).
--- up = next along the tape, down = prev.
+local function monitor_size(mon)
+    local width, height = mon.width, mon.height
+    if mon.transform % 2 == 1 then width, height = height, width end
+    return width, height
+end
+
+-- Scroll through tiled windows; clamp at scrolling-layout edges.
 function M.wheel_focus(dir)
     local ws = hl.get_active_workspace()
     if not ws then return end
@@ -24,9 +16,7 @@ function M.wheel_focus(dir)
         return
     end
 
-    local mon = ws.monitor
-    local ew, eh = mon.width, mon.height
-    if mon.transform % 2 == 1 then ew, eh = eh, ew end
+    local ew, eh = monitor_size(ws.monitor)
     local portrait = eh > ew
 
     local tiled = {}
@@ -35,10 +25,10 @@ function M.wheel_focus(dir)
     end
     table.sort(tiled, function(a, b)
         local a1, a2, b1, b2 = a.at.x, a.at.y, b.at.x, b.at.y
-        if portrait then a1, a2, b1, b2 = a2, a1, b2, b1 end -- y-major
+        if portrait then a1, a2, b1, b2 = a2, a1, b2, b1 end
         if a1 ~= b1 then return a1 < b1 end
         if a2 ~= b2 then return a2 < b2 end
-        return a.address < b.address -- stable tiebreak
+        return a.address < b.address
     end)
 
     local cur = hl.get_active_window()
@@ -49,21 +39,14 @@ function M.wheel_focus(dir)
             idx = i; break
         end
     end
-    if not idx then return end -- focused window off the tape (e.g. floating)
+    if not idx then return end
 
     local target = dir == "up" and idx + 1 or idx - 1
-    if target < 1 or target > #tiled then return end -- at an end -> stop
+    if target < 1 or target > #tiled then return end
     hl.dispatch(hl.dsp.focus({ window = "address:" .. tiled[target].address }))
 end
 
--- Cross-axis resizeactive on the scrolling layout: Hyprland picks a different
--- border to move depending on whether the window has a "prev" neighbour in
--- its band (see scrolling-resize-first-window-bug), which flips the sign of
--- delta.x on a portrait band / delta.y on a landscape band for every window
--- but the first. Detect that case from geometry and negate the cross-axis
--- component so scroll direction always means the same thing regardless of
--- position in the row. dwindle/master and the tape-axis component pass
--- through unchanged.
+-- Keep cross-axis wheel resizing consistent within a scrolling row.
 function M.wheel_resize(delta)
     local ws = hl.get_active_workspace()
     local cur = ws and hl.get_active_window()
@@ -72,9 +55,7 @@ function M.wheel_resize(delta)
         return
     end
 
-    local mon = ws.monitor
-    local ew, eh = mon.width, mon.height
-    if mon.transform % 2 == 1 then ew, eh = eh, ew end
+    local ew, eh = monitor_size(ws.monitor)
     local portrait = eh > ew
 
     local function cross(w) return portrait and w.at.x or w.at.y end
@@ -97,10 +78,7 @@ function M.wheel_resize(delta)
     hl.dispatch(hl.dsp.window.resize({ x = dx, y = dy, relative = true }))
 end
 
--- Register the 1-10 workspace switch/move binds plus next/prev cycling. Uses the
--- split-monitor-workspaces plugin for per-monitor workspaces when it's loaded,
--- else falls back to native GLOBAL workspaces (e.g. a stale .so after a Hyprland
--- upgrade — run `hyprpm update`) so the keys keep working. SUPER+0 -> ws 10.
+-- Bind workspaces 1-10, with a native fallback when the plugin is unavailable.
 function M.bind_workspaces()
     for i = 1, 10 do
         local idx = i
@@ -137,47 +115,28 @@ function M.bind_workspaces()
     hl.bind("SUPER + Page_Up", function() cycle_workspace("prev") end)
 end
 
--- Default column width for a scroller, matching the scrolling_width window
--- rules in window_rules.lua: vertical/"down" scrollers 33%, horizontal/"right"
--- 50%. Hyprland's scrolling:column_width is global-only, so anything that
--- creates a column outside window-rule application (expel) has to re-apply it.
+-- Default width for columns created after window rules run.
 function M.default_col_width(portrait)
     return portrait and 0.333 or 0.5
 end
 
--- Flip the focused column between two widths (fractions of the monitor) with
--- `layoutmsg colresize <frac>`, so a column widens in place instead of the
--- window going fullscreen -- the rest of the tape stays live, just scrolled
--- off. Whichever of the two the column currently sits nearer to, it jumps to
--- the other. No-op off the scrolling layout / on floating windows.
+-- Toggle the focused scrolling column between two width fractions.
 function M.col_toggle(lo, hi)
     local ws = hl.get_active_workspace()
     local cur = ws and hl.get_active_window()
     if not ws or not cur or ws.tiled_layout ~= "scrolling" or cur.floating then return end
 
-    -- colresize sizes the column along the TAPE axis: x on a "right"
-    -- (landscape) scroller, y on a "down" (portrait) one. Compare against the
-    -- monitor's effective span on that axis -- transforms 1/3/5/7 are 90/270-
-    -- rotated, so swap w/h first.
-    local mon = ws.monitor
-    local ew, eh = mon.width, mon.height
-    if mon.transform % 2 == 1 then ew, eh = eh, ew end
+    local ew, eh = monitor_size(ws.monitor)
     local portrait = eh > ew
     local span = portrait and eh or ew
     local size = portrait and cur.size.y or cur.size.x
 
-    -- Gaps/borders keep a column a little short of its nominal fraction, so
-    -- split at the midpoint rather than testing for equality.
+    -- Account for gaps and borders by comparing against the midpoint.
     local target = (size / span >= (lo + hi) / 2) and lo or hi
     hl.dispatch(hl.dsp.layout(string.format("colresize %.3f", target)))
 end
 
--- Toggle the active workspace between dwindle and the native scrolling layout, in
--- place. `hyprctl keyword` won't re-tile a live workspace, so set a rule for just
--- this workspace and re-apply via hl.config so only it re-tiles. Scroll direction
--- + fresh-column width follow the monitor orientation (portrait = down/33%,
--- landscape = right/50%). column_width is global-only, so bump it for the re-tile
--- then restore the 0.333 baseline a tick later (existing columns keep their width).
+-- Toggle the workspace between dwindle and orientation-aware scrolling.
 function M.toggle_layout()
     local ws = hl.get_active_workspace()
     if not ws then return end
@@ -186,9 +145,7 @@ function M.toggle_layout()
         hl.workspace_rule({ workspace = id, layout = "dwindle" })
         hl.config({ general = { layout = "dwindle" } })
     else
-        local mon = ws.monitor
-        local ew, eh = mon.width, mon.height
-        if mon.transform % 2 == 1 then ew, eh = eh, ew end
+        local ew, eh = monitor_size(ws.monitor)
         local dir, cw = "right", 0.5
         if eh > ew then dir, cw = "down", 0.333 end
         hl.config({ scrolling = { column_width = cw } })
@@ -199,32 +156,16 @@ function M.toggle_layout()
     end
 end
 
--- Walk the focused window through the scrolling layout in reading order, using
--- only movewindow. Within its band it slides along the cross axis (l/r on a
--- vertical/"down" scroller, u/d on a horizontal one). At the band edge a
--- window that still shares its band expels into a full-width band of its own
--- just past the edge; one already alone crosses into the adjacent band, then
--- walks to that band's reading-order end: the FRONT (leftmost) when going
--- forward so the window lands at the start of the next row, the BACK
--- (rightmost) of the band above when going back. The layout drops the crossed
--- window at an unpredictable slot (it depends on the window's cross position),
--- so we step one swap at a time and re-read after each move --
--- get_workspace_windows reflects the move immediately -- until nothing in the
--- band lies beyond us. A lone window at the first/last band clamps (no wrap,
--- no monitor jump).
--- dir: "back" (left/up) | "forward" (right/down).
+-- Move a window through scrolling rows in reading order without wrapping.
 function M.move_flow(dir)
     local ws = hl.get_active_workspace()
     if not ws or ws.tiled_layout ~= "scrolling" then return end
     local cur = hl.get_active_window()
     if not cur then return end
 
-    local mon = ws.monitor
-    local ew, eh = mon.width, mon.height
-    if mon.transform % 2 == 1 then ew, eh = eh, ew end
+    local ew, eh = monitor_size(ws.monitor)
     local portrait = eh > ew
-    -- primary slides within the band; secondary crosses to the adjacent band;
-    -- anti_primary walks a crossed window toward the front of its new band.
+    -- Primary moves within a row; secondary moves between rows.
     local primary, secondary, anti_primary
     if dir == "back" then
         primary, secondary, anti_primary = portrait and "l" or "u", portrait and "u" or "l", portrait and "r" or "d"
@@ -234,7 +175,7 @@ function M.move_flow(dir)
     local function cross(w) return portrait and w.at.x or w.at.y end
     local function tape(w) return portrait and w.at.y or w.at.x end
 
-    -- gather tiled windows; seg = the focused window's band (shares its tape pos)
+    -- Gather tiled windows and the focused window's row.
     local tiled, seg, t = {}, {}, tape(cur)
     for _, w in ipairs(hl.get_workspace_windows(ws.id)) do
         if not w.floating and w.mapped then
@@ -249,7 +190,7 @@ function M.move_flow(dir)
     end
     if not idx then return end
 
-    -- slide within the band until we reach its leading/trailing edge
+    -- Move within the row first.
     local at_edge
     if dir == "back" then at_edge = idx == 1 else at_edge = idx == #seg end
     if not at_edge then
@@ -257,20 +198,14 @@ function M.move_flow(dir)
         return
     end
 
-    -- at the edge of a shared band: expel into a full-width band of its own just
-    -- past this edge instead of merging straight into the neighbouring band; the
-    -- next press, now alone, crosses into it.
+    -- At a shared edge, expel into a new row before crossing further.
     if #seg > 1 then
         hl.dispatch(hl.dsp.layout(dir == "back" and "consume_or_expel prev" or "consume_or_expel next"))
-        -- The expelled window lands in a column sized from the GLOBAL
-        -- scrolling:column_width (0.333) -- window rules only fire at map time,
-        -- so nothing else gives it the per-direction default. Re-apply it.
         hl.dispatch(hl.dsp.layout(string.format("colresize %.3f", M.default_col_width(portrait))))
         return
     end
 
-    -- alone in its band: cross into the band just beyond this edge (nearest tape
-    -- value past the current); a lone window at the tape end has nowhere to go.
+    -- A lone window crosses to the nearest row in the chosen direction.
     local next_tape
     for _, w in ipairs(tiled) do
         local wt = tape(w)
@@ -280,13 +215,10 @@ function M.move_flow(dir)
             if wt > t + 10 and (not next_tape or wt < next_tape) then next_tape = wt end
         end
     end
-    if not next_tape then return end -- clamp: no wrap, no monitor jump
+    if not next_tape then return end
 
     hl.dispatch(hl.dsp.window.move({ direction = secondary }))
-    -- step toward the band's reading-order end until nothing lies beyond us
-    -- (forward -> smaller cross/front; back -> larger cross/end). anti_primary
-    -- points that way. Re-read each pass so we stop exactly at the edge instead
-    -- of overshooting into the neighbouring band.
+    -- Re-read after each move because the layout updates immediately.
     for _ = 1, 32 do
         local ws2 = hl.get_active_workspace()
         if not ws2 then break end

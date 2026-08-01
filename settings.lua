@@ -1,6 +1,3 @@
--- =====================================================================
--- Settings
--- =====================================================================
 hl.config({
     cursor = {
         no_hardware_cursors = true,
@@ -14,7 +11,7 @@ hl.config({
             active_border = "rgba(b8cacaaa)",
             inactive_border = "rgba(00000000)",
         },
-        layout = "dwindle", -- fallback for workspaces without a rule; ws 1-20 default to scrolling (see layouts.lua)
+        layout = "dwindle", -- Fallback outside workspaces 1-20.
         snap = { enabled = false },
     },
     binds = {
