@@ -1,5 +1,6 @@
 local scrolling = require("scripts.scrolling")
 local workspaces = require("scripts.workspaces")
+local noctalia_bar = require("scripts.noctalia_bar")
 
 -- Reload / quit
 hl.bind("SUPER + CTRL + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
@@ -17,7 +18,7 @@ hl.bind("SUPER + comma", hl.dsp.exec_cmd("noctalia msg settings-toggle"))
 hl.bind("SUPER + N", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center notifications"))
 hl.bind("SUPER + M", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
 hl.bind("SUPER + Y", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper"))
-hl.bind("SUPER + ALT + B", hl.dsp.exec_cmd("noctalia msg bar-toggle Island"))
+hl.bind("SUPER + ALT + B", noctalia_bar.toggle)
 hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
 hl.bind("CTRL + SHIFT + SUPER + L", hl.dsp.exec_cmd("noctalia msg session lock"))
 hl.bind("SUPER + X", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))

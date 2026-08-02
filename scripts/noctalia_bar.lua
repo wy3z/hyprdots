@@ -1,3 +1,4 @@
+local M = {}
 local BAR = "Island"
 local overview_monitor
 local shown = {}
@@ -36,6 +37,21 @@ local function schedule_refresh()
     refresh_timer = hl.timer(refresh, { timeout = 1, type = "oneshot" })
 end
 
+function M.toggle()
+    local monitor = hl.get_active_monitor()
+    if not monitor then return end
+
+    local reserved = monitor.reserved
+    local has_reserved_space = reserved.top > 0 or reserved.right > 0
+        or reserved.bottom > 0 or reserved.left > 0
+
+    if has_reserved_space then
+        hl.exec_cmd("noctalia msg bar-hide " .. BAR .. " && noctalia msg bar-reserve-toggle " .. BAR)
+    else
+        hl.exec_cmd("noctalia msg bar-reserve-toggle " .. BAR .. " && noctalia msg bar-show " .. BAR)
+    end
+end
+
 hl.on("keybinds.submap", function(name)
     if name == "scrolloverview" then
         local monitor = hl.get_active_monitor()
@@ -66,4 +82,4 @@ end)
 
 schedule_refresh()
 
-return true
+return M
