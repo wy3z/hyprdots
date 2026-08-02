@@ -5,7 +5,7 @@ hl.layer_rule({
     blur = true,
     blur_popups = true,
     -- Below the bar's ~0.28 opacity, but above transparent padding.
-    ignore_alpha = 0.01,
+    ignore_alpha = 0.4,
 })
 hl.layer_rule({ match = { namespace = "^(selection)$" }, no_anim = true })
 

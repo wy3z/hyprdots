@@ -1,7 +1,6 @@
 hl.window_rule({ match = { class = "^(org\\.gnome\\.)" }, border_size = 0 })
 hl.window_rule({ match = { class = "^(org\\.quickshell)$" }, float = true })
 hl.window_rule({ match = { class = "^(org\\.gnome\\.Calculator)$" }, float = true })
-hl.window_rule({ match = { class = "^(org\\.gnome\\.Nautilus)$" }, float = true })
 hl.window_rule({ match = { class = "^(zoom)$" }, float = true })
 hl.window_rule({ match = { float = false }, no_shadow = false })
 hl.window_rule({

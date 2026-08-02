@@ -1,5 +1,5 @@
--- Complex actions live in scripts.lua.
-local act = require("scripts")
+local scrolling = require("scripts.scrolling")
+local workspaces = require("scripts.workspaces")
 
 -- Reload / quit
 hl.bind("SUPER + CTRL + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
@@ -7,7 +7,7 @@ hl.bind("SUPER + CTRL + SHIFT + E", hl.dsp.exit())
 
 -- Apps
 hl.bind("SUPER + Return", hl.dsp.exec_cmd("ghostty"))
-hl.bind("SUPER + E", hl.dsp.exec_cmd("dolphin"))
+hl.bind("SUPER + E", hl.dsp.exec_cmd("nautilus"))
 hl.bind("SUPER + B", hl.dsp.exec_cmd("helium-browser"))
 
 -- Shell
@@ -17,10 +17,13 @@ hl.bind("SUPER + comma", hl.dsp.exec_cmd("noctalia msg settings-toggle"))
 hl.bind("SUPER + N", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center notifications"))
 hl.bind("SUPER + M", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
 hl.bind("SUPER + Y", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper"))
-hl.bind("SUPER + SHIFT + B", hl.dsp.exec_cmd("noctalia msg bar-toggle"))
+hl.bind("SUPER + ALT + B", hl.dsp.exec_cmd("noctalia msg bar-toggle Island"))
 hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
 hl.bind("CTRL + SHIFT + SUPER + L", hl.dsp.exec_cmd("noctalia msg session lock"))
 hl.bind("SUPER + X", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
+
+-- Dictation
+hl.bind("SUPER + ALT + Space", hl.dsp.exec_cmd("hyprwhspr record toggle"))
 
 -- Audio, media and brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia msg volume-up"), { locked = true, repeating = true })
@@ -63,7 +66,8 @@ hl.bind("SUPER + SHIFT + Up", hl.dsp.window.move({ direction = "u" }))
 hl.bind("SUPER + SHIFT + Right", hl.dsp.window.move({ direction = "r" }))
 
 -- Workspaces
-act.bind_workspaces()
+workspaces.bind()
+hl.bind("SUPER + SHIFT + E", workspaces.move_to_empty)
 
 -- Monitors
 hl.bind("SUPER + CTRL + Left", hl.dsp.focus({ monitor = "l" }))
@@ -81,10 +85,10 @@ hl.bind("SUPER + SHIFT + Tab", hl.dsp.window.move({ monitor = "+1" }))
 
 -- Scrolling layout
 hl.bind("SUPER + F", function()
-    act.col_toggle(0.5, 1.0)
+    scrolling.col_toggle(0.5, 1.0)
 end) -- 50% <-> 100%
 hl.bind("SUPER + R", function()
-    act.col_toggle(0.333, 0.75)
+    scrolling.col_toggle(0.333, 0.75)
 end) -- 33% <-> 75%
 hl.bind("SUPER + ALT + equal", hl.dsp.window.resize({ x = 50, y = 0, relative = true }), { repeating = true })
 hl.bind("SUPER + ALT + minus", hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
@@ -92,15 +96,15 @@ hl.bind("SUPER + ALT + CTRL + equal", hl.dsp.window.resize({ x = 0, y = 50, rela
 hl.bind("SUPER + ALT + CTRL + minus", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
 -- Move through rows in reading order.
 hl.bind("SUPER + bracketleft", function()
-    act.move_flow("back")
+    scrolling.move_flow("back")
 end)
 hl.bind("SUPER + bracketright", function()
-    act.move_flow("forward")
+    scrolling.move_flow("forward")
 end)
 
 -- Layout toggle
 hl.bind("SUPER + L", function()
-    act.toggle_layout()
+    scrolling.toggle_layout()
 end)
 
 -- Overview / window cycling
@@ -152,38 +156,26 @@ hl.bind("SUPER + mouse:274", hl.dsp.window.float({ action = "toggle" }), { mouse
 hl.bind("SUPER + SHIFT + mouse:274", hl.dsp.window.pin(), { mouse = true })
 -- Side buttons mirror SUPER + [ / ].
 hl.bind("SUPER + mouse:275", function()
-    act.move_flow("forward")
+    scrolling.move_flow("forward")
 end, { mouse = true })
 hl.bind("SUPER + mouse:276", function()
-    act.move_flow("back")
+    scrolling.move_flow("back")
 end, { mouse = true })
 
 -- Wheel
 hl.bind("SUPER + mouse_down", function()
-    act.wheel_focus("up")
+    scrolling.wheel_focus("up")
 end)
 hl.bind("SUPER + mouse_up", function()
-    act.wheel_focus("down")
+    scrolling.wheel_focus("down")
 end)
 hl.bind("SUPER + CTRL + mouse_down", hl.dsp.focus({ monitor = "r" }))
 hl.bind("SUPER + CTRL + mouse_up", hl.dsp.focus({ monitor = "l" }))
-hl.bind("SUPER + ALT + mouse_down", function()
-    act.wheel_resize({ x = 100, y = 0 })
-end, { repeating = false })
-hl.bind("SUPER + ALT + mouse_up", function()
-    act.wheel_resize({ x = -100, y = 0 })
-end, { repeating = false })
-hl.bind("SUPER + ALT + CTRL + mouse_down", function()
-    act.wheel_resize({ x = 0, y = 100 })
-end, { repeating = false })
-hl.bind("SUPER + ALT + CTRL + mouse_up", function()
-    act.wheel_resize({ x = 0, y = -100 })
-end, { repeating = false })
 hl.bind("SUPER + SHIFT + mouse_up", function()
-    act.move_flow("back")
+    scrolling.move_flow("back")
 end)
 hl.bind("SUPER + SHIFT + mouse_down", function()
-    act.move_flow("forward")
+    scrolling.move_flow("forward")
 end)
 
 -- Scroll overview
