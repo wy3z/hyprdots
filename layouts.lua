@@ -40,8 +40,8 @@ end
 apply_directions()
 -- Monitors are still being assigned their workspace block while the config runs.
 hl.timer(apply_directions, { timeout = 500, type = "oneshot" })
-for _, event in ipairs({ "monitorAdded", "monitorRemoved", "monitorLayoutChanged" }) do
-    pcall(hl.on, event, apply_directions)
+for _, event in ipairs({ "monitor.added", "monitor.removed", "monitor.layout_changed" }) do
+    hl.on(event, apply_directions)
 end
 
 hl.config({
