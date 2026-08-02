@@ -33,9 +33,9 @@ function M.apply()
 
             shadow = {
                 enabled = true,
-                range = 50,
-                render_power = 3,
-                color = 0xee1a1a1a,
+                range = 40,
+                render_power = 2,
+                color = 0x66000000,
             },
             input = {
                 scrolling_mode = 2,

@@ -3,8 +3,6 @@ hl.env("QT_QPA_PLATFORMTHEME", "kde")
 hl.env("XDG_MENU_PREFIX", "plasma-")
 hl.env("XCURSOR_SIZE", "24")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "wayland")
--- Let Claude provide its own window controls.
-hl.env("CLAUDE_NATIVE_TITLEBAR", "1")
 -- NVIDIA
 hl.env("LIBVA_DRIVER_NAME", "nvidia")
 hl.env("NVD_BACKEND", "direct")
