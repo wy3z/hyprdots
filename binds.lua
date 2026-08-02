@@ -18,13 +18,14 @@ hl.bind("SUPER + comma", hl.dsp.exec_cmd("noctalia msg settings-toggle"))
 hl.bind("SUPER + N", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center notifications"))
 hl.bind("SUPER + M", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
 hl.bind("SUPER + Y", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper"))
-hl.bind("SUPER + ALT + B", noctalia_bar.toggle)
+hl.bind("CTRL + SHIFT + B", noctalia_bar.toggle)
 hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
 hl.bind("CTRL + SHIFT + SUPER + L", hl.dsp.exec_cmd("noctalia msg session lock"))
 hl.bind("SUPER + X", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
+hl.bind("ALT + Tab", hl.dsp.exec_cmd("noctalia msg window-switcher"))
 
 -- Dictation
-hl.bind("SUPER + ALT + Space", hl.dsp.exec_cmd("hyprwhspr record toggle"))
+hl.bind("SUPER + CTRL + Space", hl.dsp.exec_cmd("hyprwhspr record toggle"))
 
 -- Audio, media and brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia msg volume-up"), { locked = true, repeating = true })
@@ -132,8 +133,8 @@ hl.bind("SUPER + TAB", function()
         end, { timeout = 1, type = "oneshot" })
     end
 end)
-hl.bind("ALT + Tab", hl.dsp.window.cycle_next({ next = true }))
-hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ prev = true }))
+
+
 
 -- Floating window resize
 hl.bind("SUPER + ALT + S", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })

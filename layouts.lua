@@ -1,8 +1,4 @@
--- Workspaces 1-10 live on one monitor and 11-20 on the other, but which block
--- lands where is decided by split-monitor-workspaces at monitor-add time and
--- cannot be relied on (monitor_priority only applies as monitors appear). So
--- the scroll direction is derived from the monitor that actually owns a block
--- rather than hardcoded per workspace id.
+-- Derive each block's direction from its assigned monitor.
 local function block_base(monitor)
     local ws = monitor.active_workspace
     if not ws or not ws.id then return nil end
@@ -29,16 +25,17 @@ local function apply_directions()
     end
 end
 
--- Portrait monitor's block displays as 1-10 instead of 11-20.
+-- Render 11-20 as 1-10 without duplicating names used by the plugin.
+local ZWSP = string.char(0xE2, 0x80, 0x8B)
 for ws = 11, 20 do
     hl.workspace_rule({
         workspace = tostring(ws),
-        default_name = tostring(ws - 10),
+        default_name = tostring(ws - 10) .. ZWSP,
     })
 end
 
 apply_directions()
--- Monitors are still being assigned their workspace block while the config runs.
+-- Reapply after the plugin assigns workspace blocks.
 hl.timer(apply_directions, { timeout = 500, type = "oneshot" })
 for _, event in ipairs({ "monitor.added", "monitor.removed", "monitor.layout_changed" }) do
     hl.on(event, apply_directions)

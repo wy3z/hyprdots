@@ -3,6 +3,7 @@ local BAR = "Island"
 local overview_monitor
 local shown = {}
 local refresh_timer
+local ready = false
 
 local function set_auto_hide(monitor, enabled)
     hl.exec_cmd(string.format(
@@ -11,6 +12,13 @@ local function set_auto_hide(monitor, enabled)
         BAR,
         monitor
     ))
+end
+
+local function set_all_auto_hide(enabled)
+    for _, monitor in ipairs(hl.get_monitors()) do
+        set_auto_hide(monitor.name, enabled)
+    end
+    shown = {}
 end
 
 local function refresh()
@@ -33,6 +41,7 @@ local function refresh()
 end
 
 local function schedule_refresh()
+    if not ready then return end
     if refresh_timer then refresh_timer:set_enabled(false) end
     refresh_timer = hl.timer(refresh, { timeout = 1, type = "oneshot" })
 end
@@ -46,9 +55,11 @@ function M.toggle()
         or reserved.bottom > 0 or reserved.left > 0
 
     if has_reserved_space then
-        hl.exec_cmd("noctalia msg bar-hide " .. BAR .. " && noctalia msg bar-reserve-toggle " .. BAR)
+        hl.exec_cmd("noctalia msg bar-reserve-toggle " .. BAR)
+        set_all_auto_hide(true)
     else
         hl.exec_cmd("noctalia msg bar-reserve-toggle " .. BAR .. " && noctalia msg bar-show " .. BAR)
+        set_all_auto_hide(false)
     end
 end
 
@@ -80,6 +91,6 @@ hl.on("hyprland.start", function()
     hl.timer(refresh, { timeout = 1000, type = "oneshot" })
 end)
 
-schedule_refresh()
+hl.timer(function() ready = true end, { timeout = 500, type = "oneshot" })
 
 return M
