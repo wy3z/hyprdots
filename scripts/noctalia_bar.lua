@@ -1,4 +1,4 @@
-local M = {}
+    local M = {}
 local BAR = "Island"
 local overview_monitor
 local shown = {}
@@ -14,20 +14,11 @@ local function set_auto_hide(monitor, enabled)
     ))
 end
 
-local function set_all_auto_hide(enabled)
-    for _, monitor in ipairs(hl.get_monitors()) do
-        set_auto_hide(monitor.name, enabled)
-    end
-    shown = {}
-end
-
 local function refresh()
     local present = {}
     for _, monitor in ipairs(hl.get_monitors()) do
         present[monitor.name] = true
-        local workspace = monitor.active_workspace
         local should_show = monitor.name == overview_monitor
-            or (workspace and workspace.is_empty)
 
         if shown[monitor.name] ~= should_show then
             shown[monitor.name] = should_show
@@ -46,22 +37,21 @@ local function schedule_refresh()
     refresh_timer = hl.timer(refresh, { timeout = 1, type = "oneshot" })
 end
 
-function M.toggle()
-    local monitor = hl.get_active_monitor()
-    if not monitor then return end
-
-    local reserved = monitor.reserved
-    local has_reserved_space = reserved.top > 0 or reserved.right > 0
-        or reserved.bottom > 0 or reserved.left > 0
-
-    if has_reserved_space then
-        hl.exec_cmd("noctalia msg bar-reserve-toggle " .. BAR)
-        set_all_auto_hide(true)
-    else
-        hl.exec_cmd("noctalia msg bar-reserve-toggle " .. BAR .. " && noctalia msg bar-show " .. BAR)
-        set_all_auto_hide(false)
-    end
-end
+-- Reserve space is driven from Noctalia's own settings; use a bar show/hide bind.
+-- function M.toggle()
+--     local monitor = hl.get_active_monitor()
+--     if not monitor then return end
+--
+--     local reserved = monitor.reserved
+--     local has_reserved_space = reserved.top > 0 or reserved.right > 0
+--         or reserved.bottom > 0 or reserved.left > 0
+--
+--     if has_reserved_space then
+--         hl.exec_cmd("noctalia msg bar-reserve-toggle " .. BAR)
+--     else
+--         hl.exec_cmd("noctalia msg bar-reserve-toggle " .. BAR .. " && noctalia msg bar-show " .. BAR)
+--     end
+-- end
 
 hl.on("keybinds.submap", function(name)
     if name == "scrolloverview" then
@@ -73,16 +63,7 @@ hl.on("keybinds.submap", function(name)
     schedule_refresh()
 end)
 
-for _, event in ipairs({
-    "workspace.active",
-    "monitor.focused",
-    "monitor.added",
-    "monitor.removed",
-    "window.open",
-    "window.close",
-    "window.destroy",
-    "window.move_to_workspace",
-}) do
+for _, event in ipairs({ "monitor.added", "monitor.removed" }) do
     hl.on(event, schedule_refresh)
 end
 

@@ -1,6 +1,5 @@
 local scrolling = require("scripts.scrolling")
 local workspaces = require("scripts.workspaces")
-local noctalia_bar = require("scripts.noctalia_bar")
 
 -- Reload / quit
 hl.bind("SUPER + CTRL + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
@@ -13,12 +12,12 @@ hl.bind("SUPER + B", hl.dsp.exec_cmd("helium-browser"))
 
 -- Shell
 hl.bind("SUPER + Space", hl.dsp.exec_cmd("vicinae toggle"))
-hl.bind("SUPER + V", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"))
+hl.bind("SUPER + C", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"))
 hl.bind("SUPER + comma", hl.dsp.exec_cmd("noctalia msg settings-toggle"))
 hl.bind("SUPER + N", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center notifications"))
 hl.bind("SUPER + M", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
 hl.bind("SUPER + Y", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper"))
-hl.bind("CTRL + SHIFT + B", noctalia_bar.toggle)
+hl.bind("CTRL + SUPER + B", hl.dsp.exec_cmd("noctalia msg bar-toggle Island"))
 hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
 hl.bind("CTRL + SHIFT + SUPER + L", hl.dsp.exec_cmd("noctalia msg session lock"))
 hl.bind("SUPER + X", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
