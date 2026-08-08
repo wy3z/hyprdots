@@ -1,4 +1,4 @@
--- Derive each block's direction from its assigned monitor.
+
 local function block_base(monitor)
     local ws = monitor.active_workspace
     if not ws or not ws.id then return nil end
@@ -35,7 +35,7 @@ for ws = 11, 20 do
 end
 
 apply_directions()
--- Reapply after the plugin assigns workspace blocks.
+
 hl.timer(apply_directions, { timeout = 500, type = "oneshot" })
 for _, event in ipairs({ "monitor.added", "monitor.removed", "monitor.layout_changed" }) do
     hl.on(event, apply_directions)
@@ -43,7 +43,7 @@ end
 
 hl.config({
     scrolling = {
-        -- Fallback for columns created after window rules run.
+
         column_width = 0.333,
         wrap_focus = false,
         fullscreen_on_one_column = false,

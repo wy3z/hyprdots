@@ -6,7 +6,7 @@ local function monitor_size(mon)
     return width, height
 end
 
--- Scroll through tiled windows; clamp at scrolling-layout edges.
+
 function M.wheel_focus(dir)
     local ws = hl.get_active_workspace()
     if not ws then return end
@@ -46,12 +46,12 @@ function M.wheel_focus(dir)
     hl.dispatch(hl.dsp.focus({ window = "address:" .. tiled[target].address }))
 end
 
--- Default width for columns created after window rules run.
+
 function M.default_col_width(portrait)
     return portrait and 0.333 or 0.5
 end
 
--- Toggle the focused scrolling column between two width fractions.
+
 function M.col_toggle(lo, hi)
     local ws = hl.get_active_workspace()
     local cur = ws and hl.get_active_window()
@@ -67,7 +67,7 @@ function M.col_toggle(lo, hi)
     hl.dispatch(hl.dsp.layout(string.format("colresize %.3f", target)))
 end
 
--- Toggle the workspace between dwindle and orientation-aware scrolling.
+
 function M.toggle_layout()
     local ws = hl.get_active_workspace()
     if not ws then return end
@@ -87,7 +87,7 @@ function M.toggle_layout()
     end
 end
 
--- Move a window through scrolling rows in reading order without wrapping.
+
 function M.move_flow(dir)
     local ws = hl.get_active_workspace()
     if not ws or ws.tiled_layout ~= "scrolling" then return end
@@ -96,7 +96,7 @@ function M.move_flow(dir)
 
     local ew, eh = monitor_size(ws.monitor)
     local portrait = eh > ew
-    -- Primary moves within a row; secondary moves between rows.
+
     local primary, secondary, anti_primary
     if dir == "back" then
         primary, secondary, anti_primary = portrait and "l" or "u", portrait and "u" or "l", portrait and "r" or "d"
@@ -106,7 +106,7 @@ function M.move_flow(dir)
     local function cross(w) return portrait and w.at.x or w.at.y end
     local function tape(w) return portrait and w.at.y or w.at.x end
 
-    -- Gather tiled windows and the focused window's row.
+
     local tiled, seg, t = {}, {}, tape(cur)
     for _, w in ipairs(hl.get_workspace_windows(ws.id)) do
         if not w.floating and w.mapped then
@@ -121,7 +121,7 @@ function M.move_flow(dir)
     end
     if not idx then return end
 
-    -- Move within the row first.
+
     local at_edge
     if dir == "back" then at_edge = idx == 1 else at_edge = idx == #seg end
     if not at_edge then
@@ -129,14 +129,14 @@ function M.move_flow(dir)
         return
     end
 
-    -- At a shared edge, expel into a new row before crossing further.
+
     if #seg > 1 then
         hl.dispatch(hl.dsp.layout(dir == "back" and "consume_or_expel prev" or "consume_or_expel next"))
         hl.dispatch(hl.dsp.layout(string.format("colresize %.3f", M.default_col_width(portrait))))
         return
     end
 
-    -- A lone window crosses to the nearest row in the chosen direction.
+
     local next_tape
     for _, w in ipairs(tiled) do
         local wt = tape(w)

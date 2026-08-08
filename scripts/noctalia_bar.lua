@@ -37,22 +37,6 @@ local function schedule_refresh()
     refresh_timer = hl.timer(refresh, { timeout = 1, type = "oneshot" })
 end
 
--- Reserve space is driven from Noctalia's own settings; use a bar show/hide bind.
--- function M.toggle()
---     local monitor = hl.get_active_monitor()
---     if not monitor then return end
---
---     local reserved = monitor.reserved
---     local has_reserved_space = reserved.top > 0 or reserved.right > 0
---         or reserved.bottom > 0 or reserved.left > 0
---
---     if has_reserved_space then
---         hl.exec_cmd("noctalia msg bar-reserve-toggle " .. BAR)
---     else
---         hl.exec_cmd("noctalia msg bar-reserve-toggle " .. BAR .. " && noctalia msg bar-show " .. BAR)
---     end
--- end
-
 hl.on("keybinds.submap", function(name)
     if name == "scrolloverview" then
         local monitor = hl.get_active_monitor()

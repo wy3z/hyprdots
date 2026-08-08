@@ -31,7 +31,7 @@ local function wanted_slots()
                 end
             end
 
-            -- The active empty workspace already provides a free slot.
+
             local active = monitor.active_workspace.id
             if slot and (occupied[active] or active == slot) then
                 wanted[slot] = monitor.name
@@ -58,7 +58,7 @@ local function apply()
     end
 end
 
--- Coalesce event bursts.
+
 local function schedule()
     if timer then timer:set_enabled(false) end
     timer = hl.timer(apply, { timeout = 1, type = "oneshot" })
@@ -74,7 +74,7 @@ for _, event in ipairs({
     hl.on(event, schedule)
 end
 
--- Monitor remaps clear rules not owned by the plugin.
+
 for _, event in ipairs({ "monitor.added", "monitor.removed", "monitor.layout_changed" }) do
     hl.on(event, function()
         pinned = {}
@@ -82,7 +82,7 @@ for _, event in ipairs({ "monitor.added", "monitor.removed", "monitor.layout_cha
     end)
 end
 
--- Wait for the plugin to assign workspace blocks.
+
 hl.timer(apply, { timeout = 500, type = "oneshot" })
 
 return true

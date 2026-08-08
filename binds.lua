@@ -9,12 +9,14 @@ hl.bind("SUPER + CTRL + SHIFT + E", hl.dsp.exit())
 hl.bind("SUPER + Return", hl.dsp.exec_cmd("ghostty"))
 hl.bind("SUPER + E", hl.dsp.exec_cmd("nautilus"))
 hl.bind("SUPER + B", hl.dsp.exec_cmd("helium-browser"))
+hl.bind("SUPER + N", hl.dsp.exec_cmd("flatpak run io.github.tanaybhomia.Whisp"))
 
 -- Shell
 hl.bind("SUPER + Space", hl.dsp.exec_cmd("vicinae toggle"))
-hl.bind("SUPER + C", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"))
+hl.bind("SUPER + V", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"))
 hl.bind("SUPER + comma", hl.dsp.exec_cmd("noctalia msg settings-toggle"))
-hl.bind("SUPER + N", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center notifications"))
+hl.bind("SUPER + I", hl.dsp.exec_cmd("noctalia msg panel-toggle nightwatch75/todo:panel"))
+hl.bind("SUPER + J", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center notifications"))
 hl.bind("SUPER + M", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
 hl.bind("SUPER + Y", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper"))
 hl.bind("CTRL + SUPER + B", hl.dsp.exec_cmd("noctalia msg bar-toggle Island"))
@@ -41,7 +43,7 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("noctalia msg brightness-down")
 -- Window state
 hl.bind("SUPER + Q", hl.dsp.window.close())
 hl.bind("SUPER + T", hl.dsp.window.float({ action = "toggle" }))
-hl.bind("SUPER + SHIFT + T", hl.dsp.window.pin()) -- pin (floating only)
+hl.bind("SUPER + SHIFT + T", hl.dsp.window.pin())
 hl.bind("SUPER + C", hl.dsp.window.center())
 hl.bind("SUPER + ALT + F", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
 hl.bind("SUPER + SHIFT + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
@@ -67,7 +69,16 @@ hl.bind("SUPER + SHIFT + Up", hl.dsp.window.move({ direction = "u" }))
 hl.bind("SUPER + SHIFT + Right", hl.dsp.window.move({ direction = "r" }))
 
 -- Workspaces
-workspaces.bind()
+for i = 1, 10 do
+    local idx = i
+    local key = (i == 10) and "0" or tostring(i)
+    hl.bind("SUPER + " .. key, function() workspaces.focus(idx) end)
+    hl.bind("SUPER + SHIFT + " .. key, function() workspaces.move(idx) end)
+end
+hl.bind("SUPER + U", function() workspaces.cycle("next") end)
+hl.bind("SUPER + Page_Down", function() workspaces.cycle("next") end)
+hl.bind("SUPER + Page_Up", function() workspaces.cycle("prev") end)
+
 hl.bind("SUPER + SHIFT + E", workspaces.move_to_empty)
 
 -- Monitors
@@ -81,7 +92,7 @@ hl.bind("SUPER + SHIFT + CTRL + Left", hl.dsp.window.move({ monitor = "l" }))
 hl.bind("SUPER + SHIFT + CTRL + Right", hl.dsp.window.move({ monitor = "r" }))
 hl.bind("SUPER + SHIFT + CTRL + 1", hl.dsp.window.move({ monitor = "HDMI-A-2" }))
 hl.bind("SUPER + SHIFT + CTRL + 2", hl.dsp.window.move({ monitor = "DP-5" }))
--- Send to the other monitor as a new column.
+
 hl.bind("SUPER + SHIFT + Tab", hl.dsp.window.move({ monitor = "+1" }))
 
 -- Scrolling layout
@@ -93,9 +104,11 @@ hl.bind("SUPER + R", function()
 end) -- 33% <-> 75%
 hl.bind("SUPER + ALT + equal", hl.dsp.window.resize({ x = 50, y = 0, relative = true }), { repeating = true })
 hl.bind("SUPER + ALT + minus", hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
+hl.bind("SUPER + ALT + mouse_up", hl.dsp.window.resize({ x = 50, y = 0, relative = true }))
+hl.bind("SUPER + ALT + mouse_down", hl.dsp.window.resize({ x = -50, y = 0, relative = true }))
 hl.bind("SUPER + ALT + CTRL + equal", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
 hl.bind("SUPER + ALT + CTRL + minus", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
--- Move through rows in reading order.
+
 hl.bind("SUPER + bracketleft", function()
     scrolling.move_flow("back")
 end)
@@ -125,7 +138,7 @@ hl.bind("SUPER + TAB", function()
             overview_layout = layout
             hl.config({ plugin = { scrolloverview = { layout = layout } } })
         end
-        -- Let the config update land before the overview snapshots its layout.
+
         hl.timer(function()
             local plugin = hl.plugin and hl.plugin.scrolloverview
             if plugin then hl.dispatch(plugin.overview("toggle")) end
@@ -133,9 +146,7 @@ hl.bind("SUPER + TAB", function()
     end
 end)
 
-
-
--- Floating window resize
+-- Resize
 hl.bind("SUPER + ALT + S", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
 hl.bind("SUPER + ALT + W", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
 hl.bind("SUPER + ALT + A", hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
@@ -147,15 +158,15 @@ hl.bind("SUPER + ALT + Right", hl.dsp.window.resize({ x = 50, y = 0, relative = 
 
 -- Screenshots
 hl.bind("Print", hl.dsp.exec_cmd("noctalia msg screenshot-region"))
-hl.bind("ALT +Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen")) -- focused monitor
-hl.bind("CTRL + Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen pick")) -- multi-monitor picker
+hl.bind("ALT +Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen"))
+hl.bind("CTRL + Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen pick"))
 
 -- Mouse drag
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind("SUPER + mouse:274", hl.dsp.window.float({ action = "toggle" }), { mouse = true })
 hl.bind("SUPER + SHIFT + mouse:274", hl.dsp.window.pin(), { mouse = true })
--- Side buttons mirror SUPER + [ / ].
+
 hl.bind("SUPER + mouse:275", function()
     scrolling.move_flow("forward")
 end, { mouse = true })
@@ -198,7 +209,7 @@ local function define_scrolloverview_submap()
                 scrolloverview.navigate(direction)
             end
         end
-        -- Use the axis perpendicular to the overview layout to cycle windows.
+
         hl.bind("SUPER + mouse_up", navigate_overview_wheel("up", "left"))
         hl.bind("SUPER + mouse_down", navigate_overview_wheel("down", "right"))
         hl.bind("SUPER + TAB", scrolloverview.overview("off"))

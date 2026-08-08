@@ -9,7 +9,7 @@ hl.animation({ leaf = "windowsOut", enabled = true, speed = 1.2, bezier = "niriQ
 hl.animation({ leaf = "windowsMove", enabled = true, speed = 2.4, spring = "niriSpring" })
 hl.animation({ leaf = "fade", enabled = true, speed = 1.2, bezier = "niriQuad" })
 
--- Match workspace slide direction to the focused monitor.
+
 local ws_anim = { leaf = "workspaces", enabled = true, speed = 2.0, spring = "niriSpringFast", style = "slide" }
 hl.animation(ws_anim)
 local function apply_ws_anim_axis(m)
