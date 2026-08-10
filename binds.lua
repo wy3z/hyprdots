@@ -90,8 +90,8 @@ hl.bind("SUPER + SHIFT + CTRL + A", hl.dsp.window.move({ monitor = "l" }))
 hl.bind("SUPER + SHIFT + CTRL + D", hl.dsp.window.move({ monitor = "r" }))
 hl.bind("SUPER + SHIFT + CTRL + Left", hl.dsp.window.move({ monitor = "l" }))
 hl.bind("SUPER + SHIFT + CTRL + Right", hl.dsp.window.move({ monitor = "r" }))
-hl.bind("SUPER + SHIFT + CTRL + 1", hl.dsp.window.move({ monitor = "HDMI-A-2" }))
-hl.bind("SUPER + SHIFT + CTRL + 2", hl.dsp.window.move({ monitor = "DP-5" }))
+hl.bind("SUPER + SHIFT + CTRL + 1", hl.dsp.window.move({ monitor = "desc:Dell Inc. DELL U2717D T4F1X621218S" }))
+hl.bind("SUPER + SHIFT + CTRL + 2", hl.dsp.window.move({ monitor = "desc:Dell Inc. DELL S2721DGF 3QWBP83" }))
 
 hl.bind("SUPER + SHIFT + Tab", hl.dsp.window.move({ monitor = "+1" }))
 

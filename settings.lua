@@ -5,7 +5,7 @@ hl.config({
     },
     general = {
         border_size = 2,
-        resize_on_border = true,
+        resize_on_border = false,
         extend_border_grab_area = 12,
         hover_icon_on_border = true,
         gaps_in = 6,
