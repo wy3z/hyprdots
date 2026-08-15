@@ -14,13 +14,13 @@ hl.window_rule({
 })
 
 -- Helium PWAs set WM_WINDOW_ROLE=pop-up, so Hyprland auto-floats them.
--- Force-tile Helium windows; Bitwarden popup is re-floated by title below.
+-- Force-tile Helium windows; Bitwarden's extension app is re-floated by its unique class.
 hl.window_rule({
     match = { class = "^(Helium)$" },
     float = false,
 })
 hl.window_rule({
-    match       = { title = "^(Bitwarden)$" },
+    match       = { class = "^chrome-nngceckbapebfimnlniiiahkandclblb-Default$" },
     float       = true,
     border_size = 0,
 })

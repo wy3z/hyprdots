@@ -26,7 +26,7 @@ hl.bind("SUPER + X", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
 hl.bind("ALT + Tab", hl.dsp.exec_cmd("noctalia msg window-switcher"))
 
 -- Dictation
-hl.bind("SUPER + CTRL + Space", hl.dsp.exec_cmd("hyprwhspr record toggle"))
+hl.bind("ALT + Space", hl.dsp.exec_cmd("hyprwhspr record toggle"))
 
 -- Audio, media and brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia msg volume-up"), { locked = true, repeating = true })
