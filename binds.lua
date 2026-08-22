@@ -8,10 +8,10 @@ hl.bind("SUPER + CTRL + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
 hl.bind("SUPER + CTRL + SHIFT + E", hl.dsp.exit())
 
 -- Apps
-hl.bind("SUPER + Return", hl.dsp.exec_cmd("ghostty"))
+hl.bind("SUPER + Return", hl.dsp.exec_cmd("ghostty +new-window"))
 hl.bind("SUPER + E", hl.dsp.exec_cmd("nautilus"))
 hl.bind("SUPER + B", hl.dsp.exec_cmd("helium-browser"))
-hl.bind("SUPER + N", hl.dsp.exec_cmd("flatpak run io.github.tanaybhomia.Whisp"))
+hl.bind("SUPER + N", hl.dsp.exec_cmd("iotas"))
 
 -- Shell
 hl.bind("SUPER + Space", hl.dsp.exec_cmd("vicinae toggle"))
