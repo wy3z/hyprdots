@@ -25,6 +25,12 @@ hl.window_rule({
     border_size = 0,
 })
 hl.window_rule({
+    match           = { class = "^com\\.freerdp\\.client\\.sdl3$" },
+    float           = false,
+    scrolling_width = 1.0,
+})
+
+hl.window_rule({
     match       = { class = "^(com\\.gabm\\.satty)$" },
     float       = true,
     border_size = 0,

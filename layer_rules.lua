@@ -9,6 +9,13 @@ hl.layer_rule({
 })
 hl.layer_rule({ match = { namespace = "^(selection)$" }, no_anim = true })
 
+hl.layer_rule({
+    match = { namespace = "^(voxtype-osd)$" },
+    blur = true,
+    ignore_alpha = 0.4,
+    no_anim = true,
+})
+
 -- Vicinae
 hl.layer_rule({
     match = { namespace = "^(vicinae)$" },

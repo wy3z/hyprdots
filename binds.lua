@@ -1,5 +1,7 @@
 local scrolling = require("scripts.scrolling")
 local workspaces = require("scripts.workspaces")
+local voxtype = require("scripts.voxtype")
+local screen_toolkit = require("scripts.screen_toolkit")
 
 -- Reload / quit
 hl.bind("SUPER + CTRL + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
@@ -25,8 +27,8 @@ hl.bind("CTRL + SHIFT + SUPER + L", hl.dsp.exec_cmd("noctalia msg session lock")
 hl.bind("SUPER + X", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
 hl.bind("ALT + Tab", hl.dsp.exec_cmd("noctalia msg window-switcher"))
 
--- Dictation
-hl.bind("ALT + Space", hl.dsp.exec_cmd("hyprwhspr record toggle"))
+-- Dictation (Voxtype streaming). Fire on release so Alt isn't held while it types.
+hl.bind("ALT + Space", voxtype.toggle, { release = true, description = "Voxtype streaming" })
 
 -- Audio, media and brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia msg volume-up"), { locked = true, repeating = true })
@@ -158,8 +160,9 @@ hl.bind("SUPER + ALT + Right", hl.dsp.window.resize({ x = 50, y = 0, relative = 
 
 -- Screenshots
 hl.bind("Print", hl.dsp.exec_cmd("noctalia msg screenshot-region"))
-hl.bind("ALT +Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen"))
-hl.bind("CTRL + Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen pick"))
+hl.bind("CTRL + Print", screen_toolkit.toggle)
+hl.bind("ALT + Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen pick"))
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen"))
 
 -- Mouse drag
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true })
