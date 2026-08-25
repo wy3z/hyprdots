@@ -30,11 +30,11 @@ hl.bind("ALT + Tab", hl.dsp.exec_cmd("noctalia msg window-switcher"))
 
 -- Dictation hybrid on a dedicated non-modifier key: tap to toggle, or hold to
 -- talk and stop on release. Scroll Lock avoids modifier-release delays.
-hl.bind("Scroll_Lock", voxtype.press, { description = "Voxtype tap/hold start" })
-hl.bind("Scroll_Lock", voxtype.direct_release, { release = true, description = "Voxtype hold release" })
+hl.bind("ALT + Space", voxtype.press, { description = "Voxtype tap/hold start" })
+hl.bind("ALT + Space", voxtype.direct_release, { release = true, description = "Voxtype hold release" })
 
 -- Quake console
-hl.bind("grave", qconsole.toggle, { description = "Toggle Quake console (pi)" })
+hl.bind("SUPER + grave", qconsole.toggle, { description = "Toggle Quake console (pi)" })
 
 -- Audio, media and brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia msg volume-up"), { locked = true, repeating = true })
