@@ -21,18 +21,20 @@ hl.bind("SUPER + comma", hl.dsp.exec_cmd("noctalia msg settings-toggle"))
 hl.bind("SUPER + I", hl.dsp.exec_cmd("noctalia msg panel-toggle nightwatch75/todo:panel"))
 hl.bind("SUPER + J", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center notifications"))
 hl.bind("SUPER + M", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
-hl.bind("SUPER + Y", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper"))
+hl.bind("SUPER + Y", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper`"))
 hl.bind("CTRL + SUPER + B", hl.dsp.exec_cmd("noctalia msg bar-toggle Island"))
 hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
 hl.bind("CTRL + SHIFT + SUPER + L", hl.dsp.exec_cmd("noctalia msg session lock"))
-hl.bind("SUPER + X", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
+hl.bind("SUPER + Z", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
 hl.bind("ALT + Tab", hl.dsp.exec_cmd("noctalia msg window-switcher"))
 
--- Dictation (Voxtype streaming). Fire on release so Alt isn't held while it types.
-hl.bind("ALT + Space", voxtype.toggle, { release = true, description = "Voxtype streaming" })
+-- Dictation hybrid on a dedicated non-modifier key: tap to toggle, or hold to
+-- talk and stop on release. Scroll Lock avoids modifier-release delays.
+hl.bind("Scroll_Lock", voxtype.press, { description = "Voxtype tap/hold start" })
+hl.bind("Scroll_Lock", voxtype.direct_release, { release = true, description = "Voxtype hold release" })
 
 -- Quake console
-hl.bind("SUPER + Escape", qconsole.toggle, { description = "Toggle Quake console (pi)" })
+hl.bind("grave", qconsole.toggle, { description = "Toggle Quake console (pi)" })
 
 -- Audio, media and brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia msg volume-up"), { locked = true, repeating = true })
