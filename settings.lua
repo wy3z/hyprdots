@@ -4,15 +4,15 @@ hl.config({
         no_warps = true,
     },
     general = {
-        border_size = 2,
+        border_size = 1,
         resize_on_border = false,
         extend_border_grab_area = 12,
         hover_icon_on_border = true,
         gaps_in = 6,
         gaps_out = 12,
         col = {
-            active_border = "rgba(b8cacaaa)",
-            inactive_border = "rgba(00000000)",
+            active_border = "rgba(73787dff)",
+            inactive_border = "rgba(303438aa)",
         },
         layout = "dwindle", -- Fallback outside workspaces 1-20.
         snap = { enabled = false },
@@ -59,9 +59,9 @@ hl.config({
         shadow = {
             enabled = true,
             range = 12,
-            render_power = 2,
-            offset = { 2, 3 },
-            color = "rgba(00000070)",
+            render_power = 3,
+            -- offset = { 2, 3 },
+            color = "rgba(00000055)",
         },
     },
     animations = {
