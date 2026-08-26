@@ -2,7 +2,6 @@ local scrolling = require("scripts.scrolling")
 local workspaces = require("scripts.workspaces")
 local voxtype = require("scripts.voxtype")
 local screen_toolkit = require("scripts.screen_toolkit")
-local qconsole = require("scripts.qconsole")
 
 -- Reload / quit
 hl.bind("SUPER + CTRL + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
@@ -33,8 +32,6 @@ hl.bind("ALT + Tab", hl.dsp.exec_cmd("noctalia msg window-switcher"))
 hl.bind("ALT + Space", voxtype.press, { description = "Voxtype tap/hold start" })
 hl.bind("ALT + Space", voxtype.direct_release, { release = true, description = "Voxtype hold release" })
 
--- Quake console
-hl.bind("SUPER + grave", qconsole.toggle, { description = "Toggle Quake console (pi)" })
 
 -- Audio, media and brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia msg volume-up"), { locked = true, repeating = true })

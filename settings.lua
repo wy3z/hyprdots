@@ -11,7 +11,20 @@ hl.config({
         gaps_in = 6,
         gaps_out = 12,
         col = {
-            active_border = "rgba(73787dff)",
+            active_border = {
+                colors = {
+                    "rgba(585c5fe5)",
+                    "rgba(585c5fe5)",
+                    "rgba(585c5fe5)",
+                    "rgba(585c5fe5)",
+                    "rgba(585c5fe5)",
+                    "rgba(585c5fe5)",
+                    "rgba(585c5fe5)",
+                    "rgba(656a70ee)",
+                    "rgba(73787dff)",
+                },
+                angle = 90,
+            },
             inactive_border = "rgba(303438aa)",
         },
         layout = "dwindle", -- Fallback outside workspaces 1-20.
@@ -73,8 +86,8 @@ hl.config({
         repeat_delay = 600,
         numlock_by_default = true,
         follow_mouse = 0,
-        sensitivity = 0.0,
-        accel_profile = "flat",
+        sensitivity = -0,
+        accel_profile = "adaptive",
         natural_scroll = false,
         left_handed = false,
         touchpad = {
