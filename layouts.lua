@@ -36,7 +36,8 @@ end
 
 apply_directions()
 
-hl.timer(apply_directions, { timeout = 500, type = "oneshot" })
+hl.on("hyprland.start", apply_directions)
+hl.on("workspace.active", apply_directions)
 for _, event in ipairs({ "monitor.added", "monitor.removed", "monitor.layout_changed" }) do
     hl.on(event, apply_directions)
 end

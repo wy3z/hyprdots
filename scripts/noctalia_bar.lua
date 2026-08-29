@@ -1,4 +1,3 @@
-local M = {}
 local BAR = "Island"
 local SHOW_SETTLE_SECONDS = 0.35
 local overview_monitor
@@ -89,4 +88,3 @@ end)
 
 hl.timer(function() ready = true end, { timeout = 500, type = "oneshot" })
 
-return M

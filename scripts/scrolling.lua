@@ -68,6 +68,7 @@ function M.col_toggle(lo, hi)
 end
 
 
+
 function M.toggle_layout()
     local ws = hl.get_active_workspace()
     if not ws then return end

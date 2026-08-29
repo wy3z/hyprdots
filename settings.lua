@@ -1,26 +1,23 @@
 hl.config({
     cursor = {
-        no_hardware_cursors = true,
         no_warps = true,
     },
     general = {
         border_size = 1,
         resize_on_border = false,
-        extend_border_grab_area = 12,
-        hover_icon_on_border = true,
         gaps_in = 6,
         gaps_out = 12,
         col = {
             active_border = {
                 colors = {
-                    "rgba(585c5fe5)",
-                    "rgba(585c5fe5)",
-                    "rgba(585c5fe5)",
-                    "rgba(585c5fe5)",
-                    "rgba(585c5fe5)",
-                    "rgba(585c5fe5)",
-                    "rgba(585c5fe5)",
-                    "rgba(656a70ee)",
+                    "rgba(62676ce8)",
+                    "rgba(62676ce8)",
+                    "rgba(62676ce8)",
+                    "rgba(62676ce8)",
+                    "rgba(62676ce8)",
+                    "rgba(62676ce8)",
+                    "rgba(62676ce8)",
+                    "rgba(6a7076f0)",
                     "rgba(73787dff)",
                 },
                 angle = 90,
@@ -55,7 +52,7 @@ hl.config({
         rounding = 8,
         active_opacity = 1.0,
         inactive_opacity = 1.0,
-        border_part_of_window = false,
+        border_part_of_window = true,
         blur = {
             enabled = true,
             popups = true,
@@ -71,10 +68,10 @@ hl.config({
         },
         shadow = {
             enabled = true,
-            range = 12,
-            render_power = 3,
-            -- offset = { 2, 3 },
-            color = "rgba(00000055)",
+            range = 32,
+            render_power = 2,
+            offset = { 3, 4 },
+            color = "rgba(00000077)",
         },
     },
     animations = {
@@ -86,7 +83,7 @@ hl.config({
         repeat_delay = 600,
         numlock_by_default = true,
         follow_mouse = 0,
-        sensitivity = -0,
+        sensitivity = -0.15,
         accel_profile = "adaptive",
         natural_scroll = false,
         left_handed = false,

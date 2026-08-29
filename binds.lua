@@ -20,17 +20,18 @@ hl.bind("SUPER + comma", hl.dsp.exec_cmd("noctalia msg settings-toggle"))
 hl.bind("SUPER + I", hl.dsp.exec_cmd("noctalia msg panel-toggle nightwatch75/todo:panel"))
 hl.bind("SUPER + J", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center notifications"))
 hl.bind("SUPER + M", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
-hl.bind("SUPER + Y", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper`"))
+hl.bind("SUPER + Y", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper"))
 hl.bind("CTRL + SUPER + B", hl.dsp.exec_cmd("noctalia msg bar-toggle Island"))
 hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"))
 hl.bind("CTRL + SHIFT + SUPER + L", hl.dsp.exec_cmd("noctalia msg session lock"))
 hl.bind("SUPER + Z", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
 hl.bind("ALT + Tab", hl.dsp.exec_cmd("noctalia msg window-switcher"))
 
--- Dictation hybrid on a dedicated non-modifier key: tap to toggle, or hold to
--- talk and stop on release. Scroll Lock avoids modifier-release delays.
+-- Dictation hybrid: tap to toggle, or hold to talk and stop on release.
+-- Let Alt settle before stopping so synthetic output spaces cannot retrigger
+-- this binding while the modifier is still logically held.
 hl.bind("ALT + Space", voxtype.press, { description = "Voxtype tap/hold start" })
-hl.bind("ALT + Space", voxtype.direct_release, { release = true, description = "Voxtype hold release" })
+hl.bind("ALT + Space", voxtype.release, { release = true, description = "Voxtype hold release" })
 
 
 -- Audio, media and brightness
@@ -107,10 +108,12 @@ end) -- 50% <-> 100%
 hl.bind("SUPER + R", function()
     scrolling.col_toggle(0.333, 0.75)
 end) -- 33% <-> 75%
+
+
 hl.bind("SUPER + ALT + equal", hl.dsp.window.resize({ x = 50, y = 0, relative = true }), { repeating = true })
 hl.bind("SUPER + ALT + minus", hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
-hl.bind("SUPER + ALT + mouse_up", hl.dsp.window.resize({ x = 50, y = 0, relative = true }))
-hl.bind("SUPER + ALT + mouse_down", hl.dsp.window.resize({ x = -50, y = 0, relative = true }))
+hl.bind("SUPER + ALT + mouse_up", hl.dsp.window.resize({ x = 100, y = 0, relative = true }))
+hl.bind("SUPER + ALT + mouse_down", hl.dsp.window.resize({ x = -100, y = 0, relative = true }))
 hl.bind("SUPER + ALT + CTRL + equal", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
 hl.bind("SUPER + ALT + CTRL + minus", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
 
@@ -171,7 +174,12 @@ hl.bind("SHIFT + Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen"))
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind("SUPER + mouse:274", hl.dsp.window.float({ action = "toggle" }), { mouse = true })
-hl.bind("SUPER + SHIFT + mouse:274", hl.dsp.window.pin(), { mouse = true })
+hl.bind("SUPER + CTRL + mouse:274", function()
+    scrolling.col_toggle(0.5, 1.0)
+end, { mouse = true }) -- 50% <-> 100%
+hl.bind("SUPER + ALT + mouse:274", function()
+    scrolling.col_toggle(0.333, 0.75)
+end, { mouse = true }) -- 33% <-> 75%
 
 hl.bind("SUPER + mouse:275", function()
     scrolling.move_flow("forward")
@@ -187,8 +195,7 @@ end)
 hl.bind("SUPER + mouse_up", function()
     scrolling.wheel_focus("down")
 end)
-hl.bind("SUPER + CTRL + mouse_down", hl.dsp.focus({ monitor = "r" }))
-hl.bind("SUPER + CTRL + mouse_up", hl.dsp.focus({ monitor = "l" }))
+
 hl.bind("SUPER + SHIFT + mouse_up", function()
     scrolling.move_flow("back")
 end)
@@ -218,6 +225,15 @@ local function define_scrolloverview_submap()
 
         hl.bind("SUPER + mouse_up", navigate_overview_wheel("up", "left"))
         hl.bind("SUPER + mouse_down", navigate_overview_wheel("down", "right"))
+
+        for i = 1, 10 do
+            local idx = i
+            local key = (i == 10) and "0" or tostring(i)
+            hl.bind("SUPER + " .. key, function()
+                workspaces.focus(idx)
+            end)
+        end
+
         hl.bind("SUPER + TAB", scrolloverview.overview("off"))
         hl.bind("Return", scrolloverview.overview("select"))
         hl.bind("Escape", scrolloverview.overview("off"))

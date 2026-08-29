@@ -1,6 +1,4 @@
-local M = {}
-
-function M.apply()
+local function apply()
     local smw = hl.plugin and hl.plugin.split_monitor_workspaces
     if smw then
 
@@ -13,7 +11,7 @@ function M.apply()
         })
 
 
-        smw.monitor_priority({ "DP-5", "HDMI-A-2" })
+        smw.monitor_priority({ "DP-2", "HDMI-A-1" })
     end
 
     local scrolloverview = hl.plugin and hl.plugin.scrolloverview
@@ -40,6 +38,4 @@ function M.apply()
     end
 end
 
-M.apply()
-
-return M
+apply()
