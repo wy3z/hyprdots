@@ -18,9 +18,10 @@ local function apply()
     if scrolloverview then
         scrolloverview.configure({
             gesture_distance = 300,
-            scale = 0.4,
+            scale = 0.5,
             workspace_gap = 60,
-            layout = "horizontal",
+            layout = "auto",
+            cross_monitor_drag = true,
             wallpaper = 2, -- 0: global only, 1: per-workspace only, 2: both
             blur = true,
 

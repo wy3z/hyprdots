@@ -76,8 +76,10 @@ local ws_anim = {
 hl.animation(ws_anim)
 
 local function apply_ws_anim_axis(m)
-    m = m or hl.get_active_monitor()
-    if not m then return end
+    if not m or not m.width or not m.height or not m.transform then
+        m = hl.get_active_monitor()
+    end
+    if not m or not m.width or not m.height or not m.transform then return end
 
     local width, height = m.width, m.height
     if m.transform % 2 == 1 then width, height = height, width end
@@ -85,12 +87,27 @@ local function apply_ws_anim_axis(m)
     hl.animation(ws_anim)
 end
 
+local retry_timer
+local function sync_ws_anim_axis(m)
+    apply_ws_anim_axis(m)
+    if retry_timer then retry_timer:set_enabled(false) end
+    retry_timer = hl.timer(function()
+        retry_timer = nil
+        apply_ws_anim_axis()
+    end, { timeout = 20, type = "oneshot" })
+end
+
 -- Avoid stacking subscriptions across config reloads.
 if _G.__ws_anim_sub then _G.__ws_anim_sub:remove() end
-_G.__ws_anim_sub = hl.on("monitor.focused", apply_ws_anim_axis)
+for _, sub in ipairs(_G.__ws_anim_subs or {}) do sub:remove() end
+_G.__ws_anim_sub = nil
+_G.__ws_anim_subs = {
+    hl.on("monitor.focused", sync_ws_anim_axis),
+    hl.on("monitor.layout_changed", sync_ws_anim_axis),
+}
 
 -- Monitor metadata may not exist during initial evaluation.
-hl.timer(apply_ws_anim_axis, { timeout = 500, type = "oneshot" })
+hl.timer(sync_ws_anim_axis, { timeout = 500, type = "oneshot" })
 
 hl.animation({
     leaf = "layersIn",

@@ -28,6 +28,7 @@ hl.config({
         snap = { enabled = false },
     },
     binds = {
+        drag_threshold = 10,
         scroll_event_delay = 0,
     },
     master = {

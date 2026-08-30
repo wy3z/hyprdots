@@ -115,44 +115,25 @@ hl.bind("SUPER + ALT + minus", hl.dsp.window.resize({ x = -50, y = 0, relative =
 hl.bind("SUPER + ALT + mouse_up", hl.dsp.window.resize({ x = 100, y = 0, relative = true }))
 hl.bind("SUPER + ALT + mouse_down", hl.dsp.window.resize({ x = -100, y = 0, relative = true }))
 hl.bind("SUPER + ALT + CTRL + equal", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
-hl.bind("SUPER + ALT + CTRL + minus", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
-
-hl.bind("SUPER + bracketleft", function()
-    scrolling.move_flow("back")
-end)
-hl.bind("SUPER + bracketright", function()
-    scrolling.move_flow("forward")
-end)
-
--- Layout toggle
-hl.bind("SUPER + L", function()
-    scrolling.toggle_layout()
-end)
-
--- Overview / window cycling
-local overview_layout
-hl.bind("SUPER + TAB", function()
-    local scrolloverview = hl.plugin and hl.plugin.scrolloverview
-    if scrolloverview then
-        local monitor = hl.get_active_monitor()
-        if monitor then
-            local width, height = monitor.width, monitor.height
-            if monitor.transform % 2 == 1 then width, height = height, width end
-            local layout = height > width and "horizontal" or "vertical"
-            if layout == overview_layout then
-                scrolloverview.overview("toggle")
-                return
-            end
-            overview_layout = layout
-            hl.config({ plugin = { scrolloverview = { layout = layout } } })
-        end
-
-        hl.timer(function()
-            local plugin = hl.plugin and hl.plugin.scrolloverview
-            if plugin then hl.dispatch(plugin.overview("toggle")) end
-        end, { timeout = 1, type = "oneshot" })
-    end
-end)
+    hl.bind("SUPER + ALT + CTRL + minus", hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
+    
+    hl.bind("SUPER + bracketleft", function()
+        scrolling.move_flow("back")
+    end)
+    hl.bind("SUPER + bracketright", function()
+        scrolling.move_flow("forward")
+    end)
+    
+    -- Layout toggle
+    hl.bind("SUPER + L", function()
+        scrolling.toggle_layout()
+    end)
+    
+    -- Overview / window cycling
+local scrolloverview = hl.plugin and hl.plugin.scrolloverview
+if scrolloverview then
+    hl.bind("SUPER + TAB", scrolloverview.overview("toggle"))
+end
 
 -- Resize
 hl.bind("SUPER + ALT + S", hl.dsp.window.resize({ x = 0, y = 50, relative = true }), { repeating = true })
@@ -237,6 +218,7 @@ local function define_scrolloverview_submap()
         hl.bind("SUPER + TAB", scrolloverview.overview("off"))
         hl.bind("Return", scrolloverview.overview("select"))
         hl.bind("Escape", scrolloverview.overview("off"))
+        hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true, submap_universal = true })
         hl.bind("mouse:272", function()
             scrolloverview.overview("select")
             scrolloverview.window("select")
