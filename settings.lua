@@ -69,10 +69,11 @@ hl.config({
         },
         shadow = {
             enabled = true,
-            range = 32,
+            range = 28,
             render_power = 2,
-            offset = { 3, 4 },
-            color = "rgba(00000077)",
+            offset = { 0, 5 },
+            color = "rgba(0000004d)",
+            color_inactive = "rgba(00000030)",
         },
     },
     animations = {
