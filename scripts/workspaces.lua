@@ -1,9 +1,18 @@
+local animations = require("animations")
+
 local M = {}
+
+local function sync_animation_axis()
+    if hl.get_current_submap() ~= "scrolloverview" then
+        animations.sync_workspace_axis()
+    end
+end
 
 
 function M.focus(idx)
     local n = tostring(idx)
     local smw = hl.plugin and hl.plugin.split_monitor_workspaces
+    sync_animation_axis()
     if smw then
         smw.workspace(n)
     else
@@ -49,6 +58,7 @@ function M.cycle(dir)
     end
     if not target or target.id == active.id then return end
 
+    sync_animation_axis()
     local smw = hl.plugin and hl.plugin.split_monitor_workspaces
     if smw then
         local monitor_workspace = ((target.id - 1) % 10) + 1
@@ -74,6 +84,7 @@ function M.move_to_empty()
 
     for target = first, first + 9 do
         if not occupied[target] then
+            sync_animation_axis()
             hl.dispatch(hl.dsp.window.move({
                 workspace = target,
                 window = window,

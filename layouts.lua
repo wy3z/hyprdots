@@ -19,6 +19,7 @@ local function apply_directions()
                     workspace = tostring(base + i),
                     layout = "scrolling",
                     layout_opts = { direction = direction },
+                    animation = direction == "down" and "slide" or "slidevert",
                 })
             end
         end

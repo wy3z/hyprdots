@@ -129,3 +129,7 @@ hl.animation({
     speed = 1,
     bezier = "default",
 })
+
+return {
+    sync_workspace_axis = apply_ws_anim_axis,
+}
