@@ -24,10 +24,6 @@ local function cancel_pin(monitor)
 end
 
 local function show_for_overview(monitor)
-    -- Turning auto-hide off reveals the bar immediately. Ask Noctalia to show it
-    -- first so its normal slide animation runs, then pin it once that animation
-    -- has had time to finish. Keeping the delay in Lua lets us cancel it if the
-    -- overview closes before the animation completes.
     cancel_pin(monitor)
     hl.exec_cmd(string.format("noctalia msg bar-show %s %s", BAR, monitor))
     pin_timers[monitor] = hl.timer(function()
@@ -82,7 +78,6 @@ for _, event in ipairs({ "monitor.added", "monitor.removed" }) do
 end
 
 hl.on("hyprland.start", function()
-    -- Noctalia starts concurrently, so allow its IPC service to become ready.
     hl.timer(refresh, { timeout = 1000, type = "oneshot" })
 end)
 

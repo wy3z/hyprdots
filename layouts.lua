@@ -26,8 +26,7 @@ local function apply_directions()
     end
 end
 
--- Render 11-20 as 1-10 without duplicating names used by the plugin.
-local ZWSP = string.char(0xE2, 0x80, 0x8B)
+local ZWSP = string.char(0xE2, 0x80, 0x8B) -- hide 11-20 as 1-10 without colliding plugin names
 for ws = 11, 20 do
     hl.workspace_rule({
         workspace = tostring(ws),

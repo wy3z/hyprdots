@@ -4,9 +4,7 @@ local function exec(cmd)
     hl.dispatch(hl.dsp.exec_cmd(cmd))
 end
 
--- Recorders (gpu-screen-recorder / wf-recorder / wl-screenrec) put
--- /tmp/screen-toolkit-record-<ts>.mp4 on their argv. The file may not
--- exist until stop, so don't look at the filesystem.
+-- argv contains screen-toolkit-record-*; the file may not exist yet.
 local function recording()
     local p = io.popen("ps -eo args=")
     if not p then

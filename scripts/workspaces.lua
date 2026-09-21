@@ -1,4 +1,5 @@
 local animations = require("animations")
+local scrolling = require("scripts.scrolling")
 
 local M = {}
 
@@ -22,13 +23,15 @@ end
 
 
 function M.move(idx)
-    local n = tostring(idx)
-    local smw = hl.plugin and hl.plugin.split_monitor_workspaces
-    if smw then
-        smw.move_to_workspace(n)
-    else
-        hl.dispatch(hl.dsp.window.move({ workspace = idx }))
-    end
+    scrolling.preserve_width(function()
+        local n = tostring(idx)
+        local smw = hl.plugin and hl.plugin.split_monitor_workspaces
+        if smw then
+            smw.move_to_workspace(n)
+        else
+            hl.dispatch(hl.dsp.window.move({ workspace = idx }))
+        end
+    end)
 end
 
 function M.cycle(dir)
@@ -85,11 +88,13 @@ function M.move_to_empty()
     for target = first, first + 9 do
         if not occupied[target] then
             sync_animation_axis()
-            hl.dispatch(hl.dsp.window.move({
-                workspace = target,
-                window = window,
-                follow = true,
-            }))
+            scrolling.preserve_width(function()
+                hl.dispatch(hl.dsp.window.move({
+                    workspace = target,
+                    window = window,
+                    follow = true,
+                }))
+            end)
             return
         end
     end

@@ -1,4 +1,3 @@
--- Keep the first empty workspace in each monitor block alive.
 local BLOCK_SIZE = 10
 local pinned = {}
 local timer

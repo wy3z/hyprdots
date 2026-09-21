@@ -52,21 +52,200 @@ function M.default_col_width(portrait)
 end
 
 
-function M.col_toggle(lo, hi)
+local PRESETS = { 0.333, 0.5, 0.75, 1.0 }
+
+local PRESET_EPSILON = 0.02 -- measured width is under the nominal preset
+local MAXIMIZED = PRESETS[#PRESETS] - PRESET_EPSILON
+
+local restore_width = {}
+local last_width = {}
+local pending = {}
+
+local function scrolling_target()
     local ws = hl.get_active_workspace()
-    local cur = ws and hl.get_active_window()
-    if not ws or not cur or ws.tiled_layout ~= "scrolling" or cur.floating then return end
+    local win = ws and hl.get_active_window()
+    if not ws or not win or ws.tiled_layout ~= "scrolling" or win.floating then return end
 
     local ew, eh = monitor_size(ws.monitor)
     local portrait = eh > ew
     local span = portrait and eh or ew
-    local size = portrait and cur.size.y or cur.size.x
-
-    -- Account for gaps and borders by comparing against the midpoint.
-    local target = (size / span >= (lo + hi) / 2) and lo or hi
-    hl.dispatch(hl.dsp.layout(string.format("colresize %.3f", target)))
+    local size = portrait and win.size.y or win.size.x
+    return win, size / span, portrait
 end
 
+local function colresize(fraction)
+    hl.dispatch(hl.dsp.layout(string.format("colresize %.3f", fraction)))
+
+    local win = hl.get_active_window()
+    if win then
+        last_width[win.address] = { fraction = fraction, monitor = win.monitor and win.monitor.name }
+    end
+end
+
+local function snap(fraction)
+    for _, preset in ipairs(PRESETS) do
+        if math.abs(preset - fraction) <= PRESET_EPSILON then return preset end
+    end
+    return fraction
+end
+
+function M.col_step(direction, wrap)
+    local win, fraction = scrolling_target()
+    if not win then return end
+
+    local target
+    if direction == "up" then
+        for i = 1, #PRESETS do
+            if PRESETS[i] > fraction + PRESET_EPSILON then
+                target = i
+                break
+            end
+        end
+        if not target and wrap then target = 1 end
+    else
+        for i = #PRESETS, 1, -1 do
+            if PRESETS[i] < fraction - PRESET_EPSILON then
+                target = i
+                break
+            end
+        end
+        if not target and wrap then target = #PRESETS end
+    end
+
+    if target then colresize(PRESETS[target]) end
+end
+
+-- window_rules scrolling_width is map-time only; this is for later moves.
+local MONITOR_WIDTH = {
+    ["DP-2"] = 0.5,
+    ["HDMI-A-1"] = 0.333,
+}
+
+-- TEMPORARY DIAGNOSTIC, remove once dragging is understood.
+local function dbg(line)
+    local f = io.open("/tmp/dragdbg", "a")
+    if not f then return end
+    f:write(line .. "\n")
+    f:close()
+end
+
+local APPLY_RETRIES = 4
+local APPLY_INTERVAL = 40
+
+local function apply_after_move(address, fraction, from, attempt)
+    attempt = attempt or 0
+    local after = hl.get_active_window()
+    dbg(string.format("  apply[%d]: want=%s active=%s from=%s to=%s frac=%.3f",
+        attempt, tostring(address), tostring(after and after.address), tostring(from),
+        tostring(after and after.monitor and after.monitor.name), fraction or -1))
+
+    if not after or after.address ~= address then
+        if attempt < APPLY_RETRIES then
+            hl.timer(function() apply_after_move(address, fraction, from, attempt + 1) end,
+                { timeout = APPLY_INTERVAL, type = "oneshot" })
+        else
+            dbg("  apply: holding for next focus")
+            pending[address] = { fraction = fraction, from = from }
+        end
+        return
+    end
+
+    local to = after.monitor and after.monitor.name
+    if not to then return end
+
+    if to == from then
+        dbg("  apply: same monitor, restoring " .. tostring(snap(fraction)))
+        colresize(snap(fraction))
+    elseif MONITOR_WIDTH[to] then
+        dbg("  apply: crossed to " .. to .. ", setting " .. MONITOR_WIDTH[to])
+        colresize(MONITOR_WIDTH[to])
+    end
+end
+
+function M.preserve_width(move)
+    local before, fraction = scrolling_target()
+    local from = before and before.monitor and before.monitor.name
+
+    move()
+
+    if before and from then apply_after_move(before.address, fraction, from) end
+end
+
+local function apply_pending(address)
+    local held = pending[address]
+    if not held then return end
+    pending[address] = nil
+    apply_after_move(address, held.fraction, held.from)
+end
+
+for _, sub in ipairs(_G.__probe_subs or {}) do sub:remove() end
+_G.__probe_subs = {}
+for _, name in ipairs({
+    "window.update_rules", "window.title", "window.pin", "window.fullscreen",
+    "workspace.active", "window.open", "window.urgent", "window.class",
+}) do
+    table.insert(_G.__probe_subs, hl.on(name, function(a)
+        local w = hl.get_active_window()
+        dbg(string.format("EVENT %s | arg=%s | active=%s size=%s", name,
+            tostring(a and (type(a) == "userdata" and a.address or a)),
+            tostring(w and w.class), tostring(w and w.size and w.size.x)))
+    end))
+end
+
+for _, sub in ipairs(_G.__scrolling_subs or {}) do sub:remove() end
+_G.__scrolling_subs = {
+    hl.on("window.active", function(win)
+        local w, frac = scrolling_target()
+        dbg(string.format("EVENT window.active | %s frac=%s", tostring(w and w.class),
+            frac and string.format("%.3f", frac) or "nil"))
+        if win and win.address and pending[win.address] then
+            dbg("active: applying held width for " .. tostring(win.address))
+            apply_pending(win.address)
+        end
+    end),
+
+    hl.on("window.move_to_workspace", function(win)
+        if not win or not win.address then return end
+        local address = win.address
+        local cached = last_width[address]
+        dbg(string.format("moved: %s cached=%s", tostring(address), tostring(cached ~= nil)))
+        if not cached or not cached.monitor then return end
+
+        pending[address] = { fraction = cached.fraction, from = cached.monitor }
+        hl.timer(function() apply_pending(address) end, { timeout = 60, type = "oneshot" })
+    end),
+}
+
+function M.col_maximize()
+    local win, fraction, portrait = scrolling_target()
+    if not win then return end
+
+    local live = {}
+    for _, w in ipairs(hl.get_windows()) do live[w.address] = true end
+    for address in pairs(restore_width) do
+        if not live[address] then restore_width[address] = nil end
+    end
+    for address in pairs(last_width) do
+        if not live[address] then last_width[address] = nil end
+    end
+
+    if fraction >= MAXIMIZED then
+        local width = restore_width[win.address]
+        restore_width[win.address] = nil
+        colresize(width or M.default_col_width(portrait))
+        return
+    end
+
+    restore_width[win.address] = snap(fraction)
+    colresize(PRESETS[#PRESETS])
+end
+
+
+function M.col_set(fraction)
+    local win = scrolling_target()
+    if not win then return end
+    colresize(fraction)
+end
 
 
 function M.toggle_layout()
@@ -150,7 +329,6 @@ function M.move_flow(dir)
     if not next_tape then return end
 
     hl.dispatch(hl.dsp.window.move({ direction = secondary }))
-    -- Re-read after each move because the layout updates immediately.
     for _ = 1, 32 do
         local ws2 = hl.get_active_workspace()
         if not ws2 then break end

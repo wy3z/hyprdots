@@ -1,3 +1,21 @@
+local SPEED = 1.35
+
+-- 1 = 100ms.
+local function duration(ds)
+    return math.floor(ds / SPEED * 100 + 0.5) / 100
+end
+
+local function spring(name, stiffness, mass)
+    mass = mass or 1
+    local k = stiffness * SPEED * SPEED
+    hl.curve(name, {
+        type = "spring",
+        mass = mass,
+        stiffness = k,
+        dampening = 2 * math.sqrt(k * mass),
+    })
+end
+
 hl.curve("niriExpo", {
     type = "bezier",
     points = {
@@ -14,18 +32,14 @@ hl.curve("niriQuad", {
     },
 })
 
-hl.curve("niriMove", {
-    type = "spring",
-    mass = 1,
-    stiffness = 1800,
-    dampening = 84.8528,
-})
+spring("niriMove", 1800)
+spring("niriWorkspace", 2200)
 
-hl.curve("niriWorkspace", {
-    type = "spring",
-    mass = 1,
-    stiffness = 2200,
-    dampening = 93.8083,
+hl.animation({
+    leaf = "global",
+    enabled = true,
+    speed = duration(2.5),
+    bezier = "niriExpo",
 })
 
 hl.animation({
@@ -39,14 +53,14 @@ hl.animation({
 hl.animation({
     leaf = "windowsMove",
     enabled = true,
-    speed = 1,
+    speed = duration(1),
     spring = "niriMove",
 })
 
 hl.animation({
     leaf = "windowsOut",
     enabled = true,
-    speed = 1.5,
+    speed = duration(1.5),
     bezier = "niriQuad",
     style = "slide",
 })
@@ -54,14 +68,14 @@ hl.animation({
 hl.animation({
     leaf = "fadeIn",
     enabled = true,
-    speed = 1.5,
+    speed = duration(1.5),
     bezier = "niriExpo",
 })
 
 hl.animation({
     leaf = "fadeOut",
     enabled = true,
-    speed = 1.5,
+    speed = duration(1.5),
     bezier = "niriQuad",
 })
 
@@ -97,7 +111,6 @@ local function sync_ws_anim_axis(m)
     end, { timeout = 20, type = "oneshot" })
 end
 
--- Avoid stacking subscriptions across config reloads.
 if _G.__ws_anim_sub then _G.__ws_anim_sub:remove() end
 for _, sub in ipairs(_G.__ws_anim_subs or {}) do sub:remove() end
 _G.__ws_anim_sub = nil
@@ -106,27 +119,40 @@ _G.__ws_anim_subs = {
     hl.on("monitor.layout_changed", sync_ws_anim_axis),
 }
 
--- Monitor metadata may not exist during initial evaluation.
 hl.timer(sync_ws_anim_axis, { timeout = 500, type = "oneshot" })
 
 hl.animation({
     leaf = "layersIn",
     enabled = true,
-    speed = 0.8,
+    speed = duration(1.2),
     bezier = "niriExpo",
 })
 
 hl.animation({
     leaf = "layersOut",
     enabled = true,
-    speed = 0.6,
+    speed = duration(0.85),
+    bezier = "niriQuad",
+})
+
+hl.animation({
+    leaf = "fadeLayersIn",
+    enabled = true,
+    speed = duration(1.2),
+    bezier = "niriExpo",
+})
+
+hl.animation({
+    leaf = "fadeLayersOut",
+    enabled = true,
+    speed = duration(0.85),
     bezier = "niriQuad",
 })
 
 hl.animation({
     leaf = "border",
     enabled = true,
-    speed = 1,
+    speed = duration(1),
     bezier = "default",
 })
 

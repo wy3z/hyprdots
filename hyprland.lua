@@ -1,4 +1,3 @@
--- Hyprland 0.55+
 require("monitors")
 require("plugins")
 require("env")
