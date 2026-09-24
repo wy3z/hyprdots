@@ -45,6 +45,17 @@ hl.window_rule({
 
 hl.window_rule({ match = { class = "^discord$", float = true }, center = true })
 
+-- Browser picture-in-picture: pop out (float, centred, pinned) with no decorations.
+-- No size rule: Chromium sizes the window to the video, and Hyprland never scales
+-- floating-window content, so the frame hugs the video exactly.
+hl.window_rule({
+    match    = { title = "(?i)^picture-in-picture$" },
+    float    = true,
+    pin      = true,
+    center   = true,
+    decorate = false,
+})
+
 hl.window_rule({ match = { float = true }, animation = "popin 80%" })
 
 hl.window_rule({

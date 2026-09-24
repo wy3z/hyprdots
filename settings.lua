@@ -1,27 +1,29 @@
-hl.config({
+local config = {
     cursor = {
         no_warps = true,
     },
     general = {
         border_size = 1,
         resize_on_border = false,
-        gaps_in = 6,
-        gaps_out = 6,
+        gaps_in = 3,
+        gaps_out = 6, --modified for top of dp2, see bottom fn
         col = {
+            -- Gray gradient, retired for a blue highlight:
             active_border = {
                 colors = {
-                    "rgba(8a8a8aff)",
-                    "rgba(707070ff)",
-                    "rgba(5c5c5cff)",
-                    "rgba(5c5c5cff)",
-                    "rgba(5c5c5cff)",
-                    "rgba(5c5c5cff)",
-                    "rgba(3a3a3aff)",
-                    "rgba(2a2a2aff)",
-                    "rgba(1a1a1aff)",
+                    "rgba(8a8a8aaa)",
+                    "rgba(707070aa)",
+                    "rgba(5c5c5caa)",
+                    "rgba(5c5c5caa)",
+                    "rgba(5c5c5caa)",
+                    "rgba(5c5c5caa)",
+                    "rgba(3a3a3aaa)",
+                    "rgba(2a2a2aaa)",
+                    "rgba(1a1a1aaa)",
                 },
                 angle = 90,
             },
+
             inactive_border = "rgba(000000ff)",
         },
         layout = "dwindle",
@@ -50,12 +52,12 @@ hl.config({
         precise_mouse_move           = false,
     },
     decoration = {
-        rounding = 8,
+        rounding = 6,
         border_part_of_window = false,
         blur = {
             enabled = true,
-            size = 2,
-            passes = 5,
+            size = 4,
+            passes = 3,
             brightness = 0.9,
             contrast = 0.95,
             vibrancy = 0.25,
@@ -104,4 +106,20 @@ hl.config({
         force_default_wallpaper = 0,
         middle_click_paste = false,
     },
+}
+
+hl.config(config)
+
+local function with_top_delta(gap, delta)
+    local top, right, bottom, left = gap, gap, gap, gap
+    if type(gap) == "table" then
+        top, right, bottom, left = gap.top, gap.right, gap.bottom, gap.left
+    end
+    return { top = top + delta, right = right, bottom = bottom, left = left }
+end
+
+-- DP-2's bar already reserves the top, so only that edge is pulled in.
+hl.workspace_rule({
+    workspace = "m[DP-2]",
+    gaps_out = with_top_delta(config.general.gaps_out, -4),
 })

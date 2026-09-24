@@ -4,198 +4,222 @@ local voxtype = require("scripts.voxtype")
 local screen_toolkit = require("scripts.screen_toolkit")
 local windows = require("scripts.windows")
 
--- descriptions feed SUPER+K (kenn/keybind-cheatsheet); undisclosed binds show as "__lua N"
+-- Noctalia groups Lua descriptions using numbered headers, not label prefixes.
+-- Repeated headers extend the same category; dynamic descriptions match by prefix.
+-- Overview-only labels must be distinct because category lookup ignores submaps.
+
+-- 1. System
 hl.bind("SUPER + CTRL + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"),
-    { description = "System: Reload Hyprland config" })
-hl.bind("SUPER + CTRL + SHIFT + E", hl.dsp.exit(), { description = "System: Exit Hyprland" })
+    { description = "Reload Hyprland config" })
+hl.bind("SUPER + CTRL + SHIFT + E", hl.dsp.exit(), { description = "Exit Hyprland" })
 
-hl.bind("SUPER + Return", hl.dsp.exec_cmd("ghostty +new-window"), { description = "Apps: Open terminal" })
-hl.bind("SUPER + E", hl.dsp.exec_cmd("nautilus"), { description = "Apps: Open file manager" })
-hl.bind("SUPER + B", hl.dsp.exec_cmd("helium-browser"), { description = "Apps: Open browser" })
-hl.bind("SUPER + N", hl.dsp.exec_cmd("iotas"), { description = "Apps: Open notes" })
+-- 2. Applications
+hl.bind("SUPER + Return", hl.dsp.exec_cmd("ghostty +new-window"), { description = "Open terminal" })
+hl.bind("SUPER + E", hl.dsp.exec_cmd("nautilus"), { description = "Open file manager" })
+hl.bind("SUPER + B", hl.dsp.exec_cmd("helium-browser"), { description = "Open browser" })
+hl.bind("SUPER + N", hl.dsp.exec_cmd("iotas"), { description = "Open notes" })
 
-hl.bind("SUPER + Space", hl.dsp.exec_cmd("vicinae toggle"), { description = "Shell: Open launcher" })
+-- 3. Shell
+hl.bind("SUPER + Space", hl.dsp.exec_cmd("vicinae toggle"), { description = "Open launcher" })
 hl.bind("SUPER + K", hl.dsp.exec_cmd("noctalia msg panel-toggle kenn/keybind-cheatsheet:cheatsheet"),
-    { description = "Shell: Show keybindings" })
+    { description = "Show keybindings" })
 hl.bind("SUPER + V", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"),
-    { description = "Shell: Show clipboard history" })
+    { description = "Show clipboard history" })
 hl.bind("SUPER + comma", hl.dsp.exec_cmd("noctalia msg settings-toggle"),
-    { description = "Shell: Open shell settings" })
+    { description = "Open shell settings" })
 
 hl.bind("SUPER + J", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center notifications"),
-    { description = "Shell: Open notifications panel" })
+    { description = "Open notifications panel" })
 hl.bind("SUPER + M", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"),
-    { description = "Shell: Open system panel" })
+    { description = "Open system panel" })
 hl.bind("SUPER + Y", hl.dsp.exec_cmd("noctalia msg panel-toggle wallpaper"),
-    { description = "Shell: Open wallpaper picker" })
-hl.bind("SUPER + CTRL + B", hl.dsp.exec_cmd("noctalia msg bar-toggle"), { description = "Shell: Toggle bar visibility" })
+    { description = "Open wallpaper picker" })
+hl.bind("SUPER + CTRL + B", hl.dsp.exec_cmd("noctalia msg bar-toggle"), { description = "Toggle bar visibility" })
 hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"),
-    { description = "Shell: Open system panel" })
+    { description = "Open system panel" })
+-- 1. System
 hl.bind("SUPER + CTRL + L", hl.dsp.exec_cmd("noctalia msg session lock"),
-    { description = "System: Lock screen" })
+    { description = "Lock screen" })
+-- 3. Shell
 hl.bind("SUPER + Escape", hl.dsp.exec_cmd("noctalia msg panel-toggle session"),
-    { description = "Shell: Open session menu" })
+    { description = "Open session menu" })
 hl.bind("SUPER + SHIFT + Escape", hl.dsp.exec_cmd("noctalia msg panel-toggle tordex/processes:panel"),
-    { description = "Shell: Open processes panel" })
-hl.bind("ALT + Tab", hl.dsp.exec_cmd("noctalia msg window-switcher"), { description = "Shell: Open window switcher" })
+    { description = "Open processes panel" })
+hl.bind("ALT + Tab", hl.dsp.exec_cmd("noctalia msg window-switcher"), { description = "Open window switcher" })
 
+-- 4. Notifications
 hl.bind("SUPER + CTRL + comma", hl.dsp.exec_cmd("noctalia msg notification-clear-active"),
-    { description = "Notifications: Dismiss active notifications" })
+    { description = "Dismiss active notifications" })
 hl.bind("SUPER + ALT + comma", hl.dsp.exec_cmd("noctalia msg notification-invoke-latest"),
-    { description = "Notifications: Invoke latest notification action" })
+    { description = "Invoke latest notification action" })
 hl.bind("SUPER + SHIFT + comma", hl.dsp.exec_cmd("noctalia msg notification-dnd-toggle"),
-    { description = "Notifications: Toggle do not disturb" })
+    { description = "Toggle do not disturb" })
 
+-- 1. System
 hl.bind("SUPER + CTRL + I", hl.dsp.exec_cmd("noctalia msg caffeine-toggle"),
-    { description = "System: Toggle idle inhibitor (caffeine)" })
+    { description = "Toggle idle inhibitor (caffeine)" })
 hl.bind("SUPER + CTRL + N", hl.dsp.exec_cmd("noctalia msg nightlight-force-toggle"),
-    { description = "System: Toggle night light" })
+    { description = "Toggle night light" })
 
-hl.bind("ALT + Space", voxtype.press, { description = "Dictation: Start dictation (tap or hold)" })
-hl.bind("ALT + Space", voxtype.release, { release = true, description = "Dictation: Stop dictation (on release)" })
+-- 5. Dictation
+hl.bind("ALT + Space", voxtype.press, { description = "Start dictation (tap or hold)" })
+hl.bind("ALT + Space", voxtype.release, { release = true, description = "Stop dictation (on release)" })
 
 
+-- 6. Media and brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia msg volume-up"),
-    { locked = true, repeating = true, description = "Media: Raise volume" })
+    { locked = true, repeating = true, description = "Raise volume" })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("noctalia msg volume-down"),
-    { locked = true, repeating = true, description = "Media: Lower volume" })
+    { locked = true, repeating = true, description = "Lower volume" })
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("noctalia msg volume-mute"),
-    { locked = true, description = "Media: Mute speakers" })
+    { locked = true, description = "Mute speakers" })
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("noctalia msg mic-mute"),
-    { locked = true, description = "Media: Mute microphone" })
+    { locked = true, description = "Mute microphone" })
 hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("noctalia msg media toggle"),
-    { locked = true, description = "Media: Play or pause media" })
+    { locked = true, description = "Play or pause media" })
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("noctalia msg media toggle"),
-    { locked = true, description = "Media: Play or pause media" })
+    { locked = true, description = "Play or pause media" })
 hl.bind("XF86AudioNext", hl.dsp.exec_cmd("noctalia msg media next"),
-    { locked = true, description = "Media: Skip to next track" })
+    { locked = true, description = "Skip to next track" })
 hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("noctalia msg media previous"),
-    { locked = true, description = "Media: Skip to previous track" })
+    { locked = true, description = "Skip to previous track" })
 hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("noctalia msg brightness-up"),
-    { locked = true, repeating = true, description = "Media: Raise screen brightness" })
+    { locked = true, repeating = true, description = "Raise screen brightness" })
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("noctalia msg brightness-down"),
-    { locked = true, repeating = true, description = "Media: Lower screen brightness" })
+    { locked = true, repeating = true, description = "Lower screen brightness" })
 
-hl.bind("SUPER + Q", hl.dsp.window.close(), { description = "Window: Close window" })
-hl.bind("SUPER + T", windows.pop, { description = "Window: Float window out, centred and pinned" })
-hl.bind("SUPER + SHIFT + T", hl.dsp.window.pin(), { description = "Window: Pin window to all workspaces" })
-hl.bind("SUPER + C", hl.dsp.window.center(), { description = "Window: Centre window" })
-hl.bind("SUPER + O", hl.dsp.window.float({ action = "toggle" }), { description = "Window: Toggle floating, keeping size and position" })
+-- 7. Window management
+hl.bind("SUPER + Q", hl.dsp.window.close(), { description = "Close window" })
+hl.bind("SUPER + T", windows.pop, { description = "Float window out, centred and pinned" })
+hl.bind("SUPER + SHIFT + T", hl.dsp.window.pin(), { description = "Pin window to all workspaces" })
+hl.bind("SUPER + C", hl.dsp.window.center(), { description = "Centre window" })
+hl.bind("SUPER + O", hl.dsp.window.float({ action = "toggle" }), { description = "Toggle floating, keeping size and position" })
 hl.bind("SUPER + ALT + F", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }),
-    { description = "Window: Maximize window (toggle)" })
+    { description = "Maximize window (toggle)" })
 hl.bind("SUPER + SHIFT + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }),
-    { description = "Window: Fullscreen window (toggle)" })
+    { description = "Fullscreen window (toggle)" })
 
-hl.bind("SUPER + A", hl.dsp.focus({ direction = "left" }), { description = "Focus: Focus window left" })
-hl.bind("SUPER + S", hl.dsp.focus({ direction = "down" }), { description = "Focus: Focus window down" })
-hl.bind("SUPER + W", hl.dsp.focus({ direction = "up" }), { description = "Focus: Focus window up" })
-hl.bind("SUPER + D", hl.dsp.focus({ direction = "right" }), { description = "Focus: Focus window right" })
-hl.bind("SUPER + Left", hl.dsp.focus({ direction = "left" }), { description = "Focus: Focus window left" })
-hl.bind("SUPER + Down", hl.dsp.focus({ direction = "down" }), { description = "Focus: Focus window down" })
-hl.bind("SUPER + Up", hl.dsp.focus({ direction = "up" }), { description = "Focus: Focus window up" })
-hl.bind("SUPER + Right", hl.dsp.focus({ direction = "right" }), { description = "Focus: Focus window right" })
+-- 8. Window focus
+hl.bind("SUPER + A", hl.dsp.focus({ direction = "left" }), { description = "Focus window left" })
+hl.bind("SUPER + S", hl.dsp.focus({ direction = "down" }), { description = "Focus window down" })
+hl.bind("SUPER + W", hl.dsp.focus({ direction = "up" }), { description = "Focus window up" })
+hl.bind("SUPER + D", hl.dsp.focus({ direction = "right" }), { description = "Focus window right" })
+hl.bind("SUPER + Left", hl.dsp.focus({ direction = "left" }), { description = "Focus window left" })
+hl.bind("SUPER + Down", hl.dsp.focus({ direction = "down" }), { description = "Focus window down" })
+hl.bind("SUPER + Up", hl.dsp.focus({ direction = "up" }), { description = "Focus window up" })
+hl.bind("SUPER + Right", hl.dsp.focus({ direction = "right" }), { description = "Focus window right" })
 
-hl.bind("SUPER + SHIFT + A", hl.dsp.window.move({ direction = "l" }), { description = "Move: Move window left" })
-hl.bind("SUPER + SHIFT + S", hl.dsp.window.move({ direction = "d" }), { description = "Move: Move window down" })
-hl.bind("SUPER + SHIFT + W", hl.dsp.window.move({ direction = "u" }), { description = "Move: Move window up" })
-hl.bind("SUPER + SHIFT + D", hl.dsp.window.move({ direction = "r" }), { description = "Move: Move window right" })
-hl.bind("SUPER + SHIFT + Left", hl.dsp.window.move({ direction = "l" }), { description = "Move: Move window left" })
-hl.bind("SUPER + SHIFT + Down", hl.dsp.window.move({ direction = "d" }), { description = "Move: Move window down" })
-hl.bind("SUPER + SHIFT + Up", hl.dsp.window.move({ direction = "u" }), { description = "Move: Move window up" })
-hl.bind("SUPER + SHIFT + Right", hl.dsp.window.move({ direction = "r" }), { description = "Move: Move window right" })
+-- 9. Move windows
+hl.bind("SUPER + SHIFT + A", hl.dsp.window.move({ direction = "l" }), { description = "Move window left" })
+hl.bind("SUPER + SHIFT + S", hl.dsp.window.move({ direction = "d" }), { description = "Move window down" })
+hl.bind("SUPER + SHIFT + W", hl.dsp.window.move({ direction = "u" }), { description = "Move window up" })
+hl.bind("SUPER + SHIFT + D", hl.dsp.window.move({ direction = "r" }), { description = "Move window right" })
+hl.bind("SUPER + SHIFT + Left", hl.dsp.window.move({ direction = "l" }), { description = "Move window left" })
+hl.bind("SUPER + SHIFT + Down", hl.dsp.window.move({ direction = "d" }), { description = "Move window down" })
+hl.bind("SUPER + SHIFT + Up", hl.dsp.window.move({ direction = "u" }), { description = "Move window up" })
+hl.bind("SUPER + SHIFT + Right", hl.dsp.window.move({ direction = "r" }), { description = "Move window right" })
 
+-- 10. Workspaces
 for i = 1, 10 do
     local idx = i
     local key = (i == 10) and "0" or tostring(i)
     hl.bind("SUPER + " .. key, function() workspaces.focus(idx) end,
-        { description = "Workspace: Focus workspace " .. idx })
+        { description = "Focus workspace " .. idx })
     hl.bind("SUPER + SHIFT + " .. key, function() workspaces.move(idx) end,
-        { description = "Workspace: Move window to workspace " .. idx })
+        { description = "Move window to workspace " .. idx })
 end
 hl.bind("SUPER + U", function() workspaces.cycle("prev") end,
-    { description = "Workspace: Focus previous workspace" })
+    { description = "Focus previous workspace" })
 hl.bind("SUPER + I", function() workspaces.cycle("next") end,
-    { description = "Workspace: Focus next workspace" })
+    { description = "Focus next workspace" })
 hl.bind("SUPER + Page_Up", function() workspaces.cycle("prev") end,
-    { description = "Workspace: Focus previous workspace" })
+    { description = "Focus previous workspace" })
 hl.bind("SUPER + Page_Down", function() workspaces.cycle("next") end,
-    { description = "Workspace: Focus next workspace" })
+    { description = "Focus next workspace" })
 
 hl.bind("SUPER + SHIFT + E", workspaces.move_to_empty,
-    { description = "Workspace: Move window to empty workspace" })
+    { description = "Move window to empty workspace" })
 
+-- 11. Monitors
 hl.bind("SUPER + CTRL + Left", hl.dsp.focus({ monitor = "l" }),
-    { description = "Monitor: Focus monitor to the left" })
+    { description = "Focus monitor to the left" })
 hl.bind("SUPER + CTRL + Right", hl.dsp.focus({ monitor = "r" }),
-    { description = "Monitor: Focus monitor to the right" })
+    { description = "Focus monitor to the right" })
 hl.bind("SUPER + SHIFT + CTRL + Left", function()
     scrolling.preserve_width(function() hl.dispatch(hl.dsp.window.move({ monitor = "l" })) end)
-end, { description = "Monitor: Move window to the monitor on the left" })
+end, { description = "Move window to the monitor on the left" })
 hl.bind("SUPER + SHIFT + CTRL + Right", function()
     scrolling.preserve_width(function() hl.dispatch(hl.dsp.window.move({ monitor = "r" })) end)
-end, { description = "Monitor: Move window to the monitor on the right" })
+end, { description = "Move window to the monitor on the right" })
 
-hl.bind("SUPER + F", scrolling.col_maximize, { submap_universal = true, description = "Column: Maximize column width (toggle)" })
+-- 12. Scrolling layout
+hl.bind("SUPER + F", scrolling.col_maximize, { submap_universal = true, description = "Maximize column width (toggle)" })
 hl.bind("SUPER + Z", function()
     scrolling.col_step("down")
-end, { submap_universal = true, description = "Column: Shrink column to previous width preset" })
+end, { submap_universal = true, description = "Shrink column to previous width preset" })
 hl.bind("SUPER + X", function()
     scrolling.col_step("up")
-end, { submap_universal = true, description = "Column: Grow column to next width preset" })
+end, { submap_universal = true, description = "Grow column to next width preset" })
 hl.bind("SUPER + SHIFT + Z", function()
     scrolling.col_set(0.333)
-end, { submap_universal = true, description = "Column: Set column width to 33%" })
+end, { submap_universal = true, description = "Set column width to 33%" })
 hl.bind("SUPER + SHIFT + X", function()
     scrolling.col_set(1.0)
-end, { submap_universal = true, description = "Column: Set column width to 100%" })
+end, { submap_universal = true, description = "Set column width to 100%" })
 
 
+-- 13. Resize windows
 hl.bind("SUPER + ALT + mouse_up", hl.dsp.window.resize({ x = 100, y = 0, relative = true }),
-    { submap_universal = true, description = "Resize: Resize window wider (100px)" })
+    { submap_universal = true, description = "Resize window wider (100px)" })
 hl.bind("SUPER + ALT + mouse_down", hl.dsp.window.resize({ x = -100, y = 0, relative = true }),
-    { submap_universal = true, description = "Resize: Resize window narrower (100px)" })
+    { submap_universal = true, description = "Resize window narrower (100px)" })
 
+-- 9. Move windows
 hl.bind("SUPER + bracketleft", function()
     scrolling.move_flow("back")
-end, { description = "Move: Move window back in the scroll flow" })
+end, { description = "Move window back in the scroll flow" })
 hl.bind("SUPER + bracketright", function()
     scrolling.move_flow("forward")
-end, { description = "Move: Move window forward in the scroll flow" })
+end, { description = "Move window forward in the scroll flow" })
 
 hl.bind("SUPER + SHIFT + mouse_up", function()
     scrolling.move_flow("back")
-end, { description = "Move: Move window back in the scroll flow" })
+end, { description = "Move window back in the scroll flow" })
 hl.bind("SUPER + SHIFT + mouse_down", function()
     scrolling.move_flow("forward")
-end, { description = "Move: Move window forward in the scroll flow" })
+end, { description = "Move window forward in the scroll flow" })
 
+-- 12. Scrolling layout
 hl.bind("SUPER + L", function()
     scrolling.toggle_layout()
-end, { description = "Column: Toggle scrolling / dwindle layout" })
+end, { description = "Toggle scrolling / dwindle layout" })
 
+-- 10. Workspaces
 local scrolloverview = hl.plugin and hl.plugin.scrolloverview
 if scrolloverview then
     hl.bind("SUPER + TAB", scrolloverview.overview("toggle"),
-        { description = "Workspace: Toggle workspace overview" })
+        { description = "Toggle workspace overview" })
 end
 
+-- 13. Resize windows
 hl.bind("SUPER + ALT + S", hl.dsp.window.resize({ x = 0, y = 50, relative = true }),
-    { repeating = true, submap_universal = true, description = "Resize: Resize window taller (50px)" })
+    { repeating = true, submap_universal = true, description = "Resize window taller (50px)" })
 hl.bind("SUPER + ALT + W", hl.dsp.window.resize({ x = 0, y = -50, relative = true }),
-    { repeating = true, submap_universal = true, description = "Resize: Resize window shorter (50px)" })
+    { repeating = true, submap_universal = true, description = "Resize window shorter (50px)" })
 hl.bind("SUPER + ALT + A", hl.dsp.window.resize({ x = -50, y = 0, relative = true }),
-    { repeating = true, submap_universal = true, description = "Resize: Resize window narrower (50px)" })
+    { repeating = true, submap_universal = true, description = "Resize window narrower (50px)" })
 hl.bind("SUPER + ALT + D", hl.dsp.window.resize({ x = 50, y = 0, relative = true }),
-    { repeating = true, submap_universal = true, description = "Resize: Resize window wider (50px)" })
+    { repeating = true, submap_universal = true, description = "Resize window wider (50px)" })
 hl.bind("SUPER + ALT + Up", hl.dsp.window.resize({ x = 0, y = -50, relative = true }),
-    { repeating = true, submap_universal = true, description = "Resize: Resize window shorter (50px)" })
+    { repeating = true, submap_universal = true, description = "Resize window shorter (50px)" })
 hl.bind("SUPER + ALT + Down", hl.dsp.window.resize({ x = 0, y = 50, relative = true }),
-    { repeating = true, submap_universal = true, description = "Resize: Resize window taller (50px)" })
+    { repeating = true, submap_universal = true, description = "Resize window taller (50px)" })
 hl.bind("SUPER + ALT + Left", hl.dsp.window.resize({ x = -50, y = 0, relative = true }),
-    { repeating = true, submap_universal = true, description = "Resize: Resize window narrower (50px)" })
+    { repeating = true, submap_universal = true, description = "Resize window narrower (50px)" })
 hl.bind("SUPER + ALT + Right", hl.dsp.window.resize({ x = 50, y = 0, relative = true }),
-    { repeating = true, submap_universal = true, description = "Resize: Resize window wider (50px)" })
+    { repeating = true, submap_universal = true, description = "Resize window wider (50px)" })
 
+-- 14. Screen zoom
 local ZOOM_MAX = 10
 
 local function zoom_by(delta)
@@ -205,49 +229,55 @@ local function zoom_by(delta)
     end
 end
 
-hl.bind("SUPER + CTRL + X", zoom_by(0.5), { repeating = true, description = "System: Zoom screen in" })
-hl.bind("SUPER + CTRL + Z", zoom_by(-0.5), { repeating = true, description = "System: Zoom screen out" })
+hl.bind("SUPER + CTRL + X", zoom_by(0.5), { repeating = true, description = "Zoom screen in" })
+hl.bind("SUPER + CTRL + Z", zoom_by(-0.5), { repeating = true, description = "Zoom screen out" })
 hl.bind("SUPER + CTRL + ALT + Z", function()
     hl.config({ cursor = { zoom_factor = 1 } })
-end, { description = "System: Reset screen zoom" })
+end, { description = "Reset screen zoom" })
 
-hl.bind("SUPER + CTRL + mouse_up", zoom_by(0.25), { description = "System: Zoom screen in" })
-hl.bind("SUPER + CTRL + mouse_down", zoom_by(-0.25), { description = "System: Zoom screen out" })
+hl.bind("SUPER + CTRL + mouse_up", zoom_by(0.25), { description = "Zoom screen in" })
+hl.bind("SUPER + CTRL + mouse_down", zoom_by(-0.25), { description = "Zoom screen out" })
 
-hl.bind("Print", hl.dsp.exec_cmd("noctalia msg screenshot-region"), { description = "Capture: Screenshot a region" })
-hl.bind("SUPER + Print", screen_toolkit.toggle, { description = "Capture: Toggle screen recording" })
+-- 15. Screen capture
+hl.bind("Print", hl.dsp.exec_cmd("noctalia msg screenshot-region"), { description = "Screenshot a region" })
+hl.bind("SUPER + Print", screen_toolkit.toggle, { description = "Toggle screen recording" })
 hl.bind("ALT + Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen pick"),
-    { description = "Capture: Screenshot a monitor (pick)" })
+    { description = "Screenshot a monitor (pick)" })
 hl.bind("SHIFT + Print", hl.dsp.exec_cmd("noctalia msg screenshot-fullscreen"),
-    { description = "Capture: Screenshot the focused monitor" })
+    { description = "Screenshot the focused monitor" })
 
-hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true, description = "Window: Drag window" })
+-- 7. Window management
+hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true, description = "Drag window" })
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(),
-    { mouse = true, submap_universal = true, description = "Window: Resize window by dragging" })
+    { mouse = true, submap_universal = true, description = "Resize window by dragging" })
 hl.bind("SUPER + mouse:274", windows.pop,
-    { mouse = true, description = "Window: Float window out, centred and pinned" })
+    { mouse = true, description = "Float window out, centred and pinned" })
+-- 12. Scrolling layout
 hl.bind("SUPER + CTRL + mouse:274", scrolling.col_maximize,
-    { mouse = true, description = "Column: Maximize column width (toggle)" })
+    { mouse = true, description = "Maximize column width (toggle)" })
 hl.bind("SUPER + ALT + mouse:274", function()
     scrolling.col_step("up", true)
-end, { mouse = true, description = "Column: Cycle column width presets" })
+end, { mouse = true, description = "Cycle column width presets" })
 
+-- 9. Move windows
 hl.bind("SUPER + mouse:275", function()
     scrolling.move_flow("forward")
-end, { mouse = true, description = "Move: Move window forward in the scroll flow" })
+end, { mouse = true, description = "Move window forward in the scroll flow" })
 hl.bind("SUPER + mouse:276", function()
     scrolling.move_flow("back")
-end, { mouse = true, description = "Move: Move window back in the scroll flow" })
+end, { mouse = true, description = "Move window back in the scroll flow" })
 
+-- 8. Window focus
 hl.bind("SUPER + mouse_down", function()
     scrolling.wheel_focus("up")
-end, { description = "Focus: Focus next window" })
+end, { description = "Focus next window" })
 hl.bind("SUPER + mouse_up", function()
     scrolling.wheel_focus("down")
-end, { description = "Focus: Focus previous window" })
+end, { description = "Focus previous window" })
 
 
 
+-- 16. Workspace overview
 local function define_scrolloverview_submap()
     local scrolloverview = hl.plugin and hl.plugin.scrolloverview
     if not scrolloverview then
@@ -277,20 +307,20 @@ local function define_scrolloverview_submap()
             local key = (i == 10) and "0" or tostring(i)
             hl.bind("SUPER + " .. key, function()
                 workspaces.focus(idx)
-            end, { description = "Workspace: Focus workspace " .. idx })
+            end, { description = "Focus overview workspace " .. idx })
         end
 
         hl.bind("SUPER + TAB", scrolloverview.overview("off"), { description = "Close overview" })
         hl.bind("Return", scrolloverview.overview("select"), { description = "Select workspace" })
         hl.bind("Escape", scrolloverview.overview("off"), { description = "Close overview" })
         hl.bind("SUPER + mouse:272", hl.dsp.window.drag(),
-            { mouse = true, submap_universal = true, description = "Window: Drag window" })
+            { mouse = true, submap_universal = true, description = "Drag window in overview" })
         hl.bind("mouse:272", function()
             scrolloverview.overview("select")
             scrolloverview.window("select")
             scrolloverview.overview("off")
         end, { mouse = true, description = "Select window" })
-        hl.bind("mouse:274", scrolloverview.window("close"), { mouse = true, description = "Window: Close window" })
+        hl.bind("mouse:274", scrolloverview.window("close"), { mouse = true, description = "Close window in overview" })
     end)
 end
 
