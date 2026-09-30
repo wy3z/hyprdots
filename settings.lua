@@ -19,7 +19,7 @@ local config = {
                     "rgba(5c5c5caa)",
                     "rgba(3a3a3aaa)",
                     "rgba(2a2a2aaa)",
-                    "rgba(1a1a1aba)",
+                    "rgba(1a1a1aaa)",
                 },
                 angle = 90,
             },
