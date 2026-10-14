@@ -3,7 +3,9 @@ hl.layer_rule({
     match = { namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd)$" },
     blur = true,
     blur_popups = true,
-    ignore_alpha = 0.3, -- dock vanishes at 0.40
+    -- Pixels at or under this alpha are left sharp. Bar is 0.28 and capsules
+    -- are 0.26, so 0.3 skipped the whole bar. Dock still disappears around 0.40.
+    ignore_alpha = 0.2,
 })
 hl.layer_rule({ match = { namespace = "^(selection)$" }, no_anim = true })
 
