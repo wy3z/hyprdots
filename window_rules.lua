@@ -19,6 +19,17 @@ hl.window_rule({
 })
 
 hl.window_rule({
+    match = {
+        class = "^chrome-outlook\\.cloud\\.microsoft_.*$",
+        initial_title = "^about:blank$",
+    },
+    float = true,
+    size = { 1300, 900 },
+    center = true,
+    pin = true,
+})
+
+hl.window_rule({
     match       = { class = "^chrome-nngceckbapebfimnlniiiahkandclblb.*$" },
     float       = true,
     border_size = 0,

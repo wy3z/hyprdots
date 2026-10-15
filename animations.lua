@@ -31,8 +31,8 @@ hl.curve("niriQuad", {
     },
 })
 
-spring("niriWorkspace", 12000)
-spring("niriOverview", 4800)
+spring("niriWorkspace", 8500)
+spring("niriOverview", 4800 / 1.2 ^ 2)
 
 hl.animation({
     leaf = "global",
@@ -59,7 +59,7 @@ hl.animation({
 hl.animation({
     leaf = "windowsOut",
     enabled = true,
-    speed = duration(1.5),
+    speed = duration(1.8),
     bezier = "niriQuad",
     style = "slide",
 })
@@ -67,14 +67,14 @@ hl.animation({
 hl.animation({
     leaf = "fadeIn",
     enabled = true,
-    speed = duration(1.5),
+    speed = duration(1.8),
     bezier = "niriExpo",
 })
 
 hl.animation({
     leaf = "fadeOut",
     enabled = true,
-    speed = duration(1.5),
+    speed = duration(1.8),
     bezier = "niriQuad",
 })
 
