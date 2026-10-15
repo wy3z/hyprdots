@@ -1,30 +1,4 @@
-local EXTRA_BORDERS = 2
-
-hl.config({
-    plugin = {
-        borders_plus_plus = {
-            add_borders = EXTRA_BORDERS,
-            natural_rounding = false,
-            col = {
-                border_1 = "rgb(5c5c5c)",
-                border_2 = "rgb(000000)",
-            },
-            border_size_1 = 1,
-            border_size_2 = 1,
-        },
-    },
-})
-
--- Hide extra borders in overview to avoid misaligned decorations while dragging.
-local function sync_overview_borders(submap)
-    hl.config({
-        plugin = {
-            borders_plus_plus = {
-                add_borders = submap == "scrolloverview" and 0 or EXTRA_BORDERS,
-            },
-        },
-    })
-end
+local policy = require("scripts.monitor_policy")
 
 local smw = hl.plugin and hl.plugin.split_monitor_workspaces
 if smw then
@@ -32,11 +6,12 @@ if smw then
         plugin = {
             split_monitor_workspaces = {
                 enable_persistent_workspaces = false,
+                keep_focused = true,
             },
         },
     })
 
-    smw.monitor_priority({ "DP-2", "HDMI-A-1" })
+    smw.monitor_priority(policy.monitor_order)
 end
 
 local scrolloverview = hl.plugin and hl.plugin.scrolloverview
@@ -47,7 +22,7 @@ if scrolloverview then
         workspace_gap = 60,
         layout = "auto",
         cross_monitor_drag = true,
-        wallpaper = 2, -- 0: global only, 1: per-workspace only, 2: both
+        wallpaper = 2,
         blur = false,
 
         shadow = {
@@ -62,6 +37,3 @@ if scrolloverview then
         },
     })
 end
-
-hl.on("keybinds.submap", sync_overview_borders)
-sync_overview_borders(hl.get_current_submap())

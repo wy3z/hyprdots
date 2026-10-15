@@ -1,3 +1,4 @@
+local policy = require("scripts.monitor_policy")
 local animations = require("animations")
 local scrolling = require("scripts.scrolling")
 
@@ -64,7 +65,7 @@ function M.cycle(dir)
     sync_animation_axis()
     local smw = hl.plugin and hl.plugin.split_monitor_workspaces
     if smw then
-        local monitor_workspace = ((target.id - 1) % 10) + 1
+        local monitor_workspace = ((target.id - 1) % policy.workspaces_per_monitor) + 1
         smw.workspace(tostring(monitor_workspace))
     else
         hl.dispatch(hl.dsp.focus({ workspace = target.id }))
@@ -77,7 +78,7 @@ function M.move_to_empty()
     local active = hl.get_active_workspace()
     if not window or not active or active.id < 1 then return end
 
-    local first = math.floor((active.id - 1) / 10) * 10 + 1
+    local first = policy.workspace_base(active.id) + 1
     local occupied = {}
     for _, candidate in ipairs(hl.get_windows()) do
         if candidate.mapped and candidate.workspace then
@@ -85,7 +86,7 @@ function M.move_to_empty()
         end
     end
 
-    for target = first, first + 9 do
+    for target = first, first + policy.workspaces_per_monitor - 1 do
         if not occupied[target] then
             sync_animation_axis()
             scrolling.preserve_width(function()

@@ -1,10 +1,5 @@
 local M = {}
 
-local function exec(cmd)
-    hl.dispatch(hl.dsp.exec_cmd(cmd))
-end
-
--- argv contains screen-toolkit-record-*; the file may not exist yet.
 local function recording()
     local p = io.popen("ps -eo args=")
     if not p then
@@ -22,9 +17,9 @@ end
 
 function M.toggle()
     if recording() then
-        exec("noctalia msg plugin alexander/screen-toolkit:service all recordStop")
+        hl.exec_cmd("noctalia msg plugin alexander/screen-toolkit:service all recordStop")
     else
-        exec("noctalia msg plugin alexander/screen-toolkit:service all toggle")
+        hl.exec_cmd("noctalia msg plugin alexander/screen-toolkit:service all toggle")
     end
 end
 

@@ -1,13 +1,6 @@
-local BLOCK_SIZE = 10
+local policy = require("scripts.monitor_policy")
 local pinned = {}
 local timer
-
-local function block_base(monitor)
-    local ws = monitor.active_workspace
-    if not ws or not ws.id then return nil end
-    if ws.id < 1 or ws.id > 2 * BLOCK_SIZE then return nil end
-    return math.floor((ws.id - 1) / BLOCK_SIZE) * BLOCK_SIZE
-end
 
 local function wanted_slots()
     local occupied = {}
@@ -19,10 +12,10 @@ local function wanted_slots()
 
     local wanted = {}
     for _, monitor in ipairs(hl.get_monitors()) do
-        local base = block_base(monitor)
+        local base = policy.monitor_workspace_base(monitor)
         if base then
             local slot
-            for i = 1, BLOCK_SIZE do
+            for i = 1, policy.workspaces_per_monitor do
                 local id = base + i
                 if not occupied[id] then
                     slot = id

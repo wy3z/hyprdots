@@ -1,36 +1,36 @@
-
-local function block_base(monitor)
-    local ws = monitor.active_workspace
-    if not ws or not ws.id then return nil end
-    if ws.id >= 1 and ws.id <= 10 then return 0 end
-    if ws.id >= 11 and ws.id <= 20 then return 10 end
-    return nil
-end
+local policy = require("scripts.monitor_policy")
+local directions = {}
 
 local function apply_directions()
     for _, monitor in ipairs(hl.get_monitors()) do
-        local base = block_base(monitor)
+        local base = policy.monitor_workspace_base(monitor)
         if base then
-            local width, height = monitor.width, monitor.height
-            if monitor.transform % 2 == 1 then width, height = height, width end
-            local direction = height > width and "down" or "right"
-            for i = 1, 10 do
-                hl.workspace_rule({
-                    workspace = tostring(base + i),
-                    layout = "scrolling",
-                    layout_opts = { direction = direction },
-                    animation = direction == "down" and "slide" or "slidevert",
-                })
+            local direction = policy.is_portrait(monitor) and "down" or "right"
+            if directions[base] ~= direction then
+                directions[base] = direction
+                for i = 1, policy.workspaces_per_monitor do
+                    hl.workspace_rule({
+                        workspace = tostring(base + i),
+                        layout_opts = { direction = direction },
+                        animation = direction == "down" and "slide" or "slidevert",
+                    })
+                end
             end
         end
     end
 end
 
-local ZWSP = string.char(0xE2, 0x80, 0x8B) -- hide 11-20 as 1-10 without colliding plugin names
-for ws = 11, 20 do
+local ZWSP = string.char(0xE2, 0x80, 0x8B)
+local current_layouts = {}
+for _, workspace in ipairs(hl.get_workspaces()) do
+    current_layouts[workspace.id] = workspace.tiled_layout
+end
+for ws = 1, #policy.monitor_order * policy.workspaces_per_monitor do
     hl.workspace_rule({
         workspace = tostring(ws),
-        default_name = tostring(ws - 10) .. ZWSP,
+        layout = current_layouts[ws] or "scrolling",
+        default_name = ws > policy.workspaces_per_monitor
+            and tostring(ws - policy.workspaces_per_monitor) .. ZWSP or nil,
     })
 end
 
@@ -44,8 +44,7 @@ end
 
 hl.config({
     scrolling = {
-
-        column_width = 0.333,
+        column_width = policy.portrait_width,
         wrap_focus = false,
         fullscreen_on_one_column = false,
     },

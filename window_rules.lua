@@ -1,4 +1,5 @@
--- Class patterns must be whole-string. Do not zero GNOME border_size (CSD hairline).
+local policy = require("scripts.monitor_policy")
+
 hl.window_rule({ match = { class = "^(org\\.gnome\\.Calculator)$" }, float = true })
 hl.window_rule({ match = { class = "^(zoom)$" }, float = true })
 
@@ -12,12 +13,11 @@ hl.window_rule({
     border_size = 0,
 })
 
--- Helium PWAs auto-float via WM_WINDOW_ROLE=pop-up; Bitwarden re-floats on its own class.
 hl.window_rule({
     match = { class = "(?i)^(helium)$" },
     float = false,
 })
--- Chromium appends the URL path to PWA classes.
+
 hl.window_rule({
     match       = { class = "^chrome-nngceckbapebfimnlniiiahkandclblb.*$" },
     float       = true,
@@ -45,9 +45,13 @@ hl.window_rule({
 
 hl.window_rule({ match = { class = "^discord$", float = true }, center = true })
 
--- Browser picture-in-picture: pop out (float, centred, pinned) with no decorations.
--- No size rule: Chromium sizes the window to the video, and Hyprland never scales
--- floating-window content, so the frame hugs the video exactly.
+hl.window_rule({
+    match = { class = "(?i)^slack$", initial_title = "(?i)^huddle(:.*)?$" },
+    float = true,
+    size = { 960, 540 },
+    center = true,
+})
+
 hl.window_rule({
     match    = { title = "(?i)^picture-in-picture$" },
     float    = true,
@@ -80,5 +84,15 @@ hl.window_rule({
     no_blur = true,
 })
 
-hl.window_rule({ match = { workspace = "m[DP-2]" }, scrolling_width = 0.5 })
-hl.window_rule({ match = { workspace = "m[HDMI-A-1]" }, scrolling_width = 0.333 })
+hl.window_rule({
+    match = { modal = true },
+    float = true,
+    center = true,
+})
+
+for _, monitor in ipairs(policy.monitor_order) do
+    hl.window_rule({
+        match = { workspace = "m[" .. monitor .. "]" },
+        scrolling_width = policy.monitor_widths[monitor],
+    })
+end
