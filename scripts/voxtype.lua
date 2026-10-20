@@ -1,1 +1,1 @@
-/home/wyez/Projects/Personal/VoxType/hypr/voxtype.lua
+/home/wyez/Projects/personal/VoxType/hypr/voxtype.lua

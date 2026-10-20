@@ -1,6 +1,6 @@
 hl.on("hyprland.start", function()
     hl.exec_cmd(
-        "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY HYPRLAND_INSTANCE_SIGNATURE XDG_CURRENT_DESKTOP && systemctl --user try-restart bb-app.service && systemctl --user start hyprland-session.target && systemctl --user restart voxtype-waveform.service"
+        "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY HYPRLAND_INSTANCE_SIGNATURE XDG_CURRENT_DESKTOP XDG_SESSION_TYPE ELECTRON_OZONE_PLATFORM_HINT && systemctl --user try-restart bb-app.service && systemctl --user start hyprland-session.target && systemctl --user restart voxtype-waveform.service"
     )
     hl.exec_cmd("hyprctl setcursor wyezMoj")
     hl.exec_cmd("/usr/bin/noctalia")

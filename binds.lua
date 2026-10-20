@@ -10,7 +10,7 @@ hl.bind("SUPER + CTRL + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"),
 hl.bind("SUPER + CTRL + SHIFT + E", hl.dsp.exit(), { description = "Exit Hyprland" })
 
 hl.bind("SUPER + Return", hl.dsp.exec_cmd("ghostty +new-window"), { description = "Open terminal" })
-hl.bind("SUPER + E", hl.dsp.exec_cmd("nautilus"), { description = "Open file manager" })
+hl.bind("SUPER + E", hl.dsp.exec_cmd("nautilus --new-window"), { description = "Open file manager in a new window" })
 hl.bind("SUPER + B", hl.dsp.exec_cmd("helium-browser"), { description = "Open browser" })
 hl.bind("SUPER + N", hl.dsp.exec_cmd("iotas"), { description = "Open notes" })
 
