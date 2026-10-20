@@ -1,4 +1,7 @@
 local policy = require("scripts.monitor_policy")
+
+hl.curve("easeOutQuint", { type = "bezier", points = { { 0.23, 1 }, { 0.32, 1 } } })
+hl.curve("linear", { type = "bezier", points = { { 0, 0 }, { 1, 1 } } })
 local SPEED = 1.35
 
 local function duration(ds)
@@ -44,9 +47,9 @@ hl.animation({
 hl.animation({
     leaf = "windowsIn",
     enabled = true,
-    speed = 1,
-    spring = "niriOverview",
-    style = "slide",
+    speed = 1.5,
+    bezier = "easeOutQuint",
+    style = "popin 87%",
 })
 
 hl.animation({
@@ -59,9 +62,9 @@ hl.animation({
 hl.animation({
     leaf = "windowsOut",
     enabled = true,
-    speed = duration(1.8),
-    bezier = "niriQuad",
-    style = "slide",
+    speed = 1,
+    bezier = "linear",
+    style = "popin 87%",
 })
 
 hl.animation({

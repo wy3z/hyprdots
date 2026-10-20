@@ -71,7 +71,7 @@ hl.window_rule({
     decorate = false,
 })
 
-hl.window_rule({ match = { float = true }, animation = "popin 80%" })
+hl.window_rule({ match = { float = true }, animation = "popin 87%" })
 
 hl.window_rule({
     match       = { class = "^codex-desktop$", float = true },
