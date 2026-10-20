@@ -2,6 +2,11 @@ local policy = require("scripts.monitor_policy")
 local directions = {}
 
 local function apply_directions()
+    local current_layouts = {}
+    for _, workspace in ipairs(hl.get_workspaces()) do
+        current_layouts[workspace.id] = workspace.tiled_layout
+    end
+
     for _, monitor in ipairs(hl.get_monitors()) do
         local base = policy.monitor_workspace_base(monitor)
         if base then
@@ -11,6 +16,7 @@ local function apply_directions()
                 for i = 1, policy.workspaces_per_monitor do
                     hl.workspace_rule({
                         workspace = tostring(base + i),
+                        layout = current_layouts[base + i] or (direction == "down" and "scrolling" or "dwindle"),
                         layout_opts = { direction = direction },
                         animation = direction == "down" and "slide" or "slidevert",
                     })
@@ -21,14 +27,9 @@ local function apply_directions()
 end
 
 local ZWSP = string.char(0xE2, 0x80, 0x8B)
-local current_layouts = {}
-for _, workspace in ipairs(hl.get_workspaces()) do
-    current_layouts[workspace.id] = workspace.tiled_layout
-end
 for ws = 1, #policy.monitor_order * policy.workspaces_per_monitor do
     hl.workspace_rule({
         workspace = tostring(ws),
-        layout = current_layouts[ws] or "scrolling",
         default_name = ws > policy.workspaces_per_monitor
             and tostring(ws - policy.workspaces_per_monitor) .. ZWSP or nil,
     })

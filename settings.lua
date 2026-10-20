@@ -20,8 +20,8 @@ local config = {
         scroll_event_delay = 0,
     },
     dwindle = {
-        force_split                  = 0,
-        preserve_split               = false,
+        force_split                  = 2,
+        preserve_split               = true,
         smart_split                  = false,
         smart_resizing               = true,
         permanent_direction_override = false,

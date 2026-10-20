@@ -1,15 +1,7 @@
 local policy = require("scripts.monitor_policy")
 local M = {}
 
-function M.wheel_focus(dir)
-    local ws = hl.get_active_workspace()
-    if not ws then return end
-
-    if ws.tiled_layout ~= "scrolling" then
-        hl.dispatch(hl.dsp.window.cycle_next({ [dir == "up" and "prev" or "next"] = true }))
-        return
-    end
-
+local function ordered_tiled_windows(ws)
     local portrait = policy.is_portrait(ws.monitor)
 
     local tiled = {}
@@ -23,7 +15,19 @@ function M.wheel_focus(dir)
         if a2 ~= b2 then return a2 < b2 end
         return a.address < b.address
     end)
+    return tiled
+end
 
+function M.wheel_focus(dir)
+    local ws = hl.get_active_workspace()
+    if not ws then return end
+
+    if ws.tiled_layout ~= "scrolling" then
+        hl.dispatch(hl.dsp.window.cycle_next({ [dir == "up" and "prev" or "next"] = true }))
+        return
+    end
+
+    local tiled = ordered_tiled_windows(ws)
     local cur = hl.get_active_window()
     local curaddr = cur and cur.address
     local idx
@@ -61,12 +65,12 @@ local function scrolling_target()
 end
 
 local function colresize(fraction)
+    local win = scrolling_target()
+    if not win then return end
+
     hl.dispatch(hl.dsp.layout(string.format("colresize %.3f", fraction)))
 
-    local win = hl.get_active_window()
-    if win then
-        last_width[win.address] = { fraction = fraction, monitor = win.monitor and win.monitor.name }
-    end
+    last_width[win.address] = { fraction = fraction, monitor = win.monitor and win.monitor.name }
 end
 
 local function snap(fraction)
@@ -163,6 +167,14 @@ hl.on("window.move_to_workspace", function(win)
 end)
 
 function M.col_maximize()
+    local ws = hl.get_active_workspace()
+    if ws and ws.tiled_layout == "dwindle" then
+        if hl.get_active_window() then
+            hl.dispatch(hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
+        end
+        return
+    end
+
     local win, fraction, portrait = scrolling_target()
     if not win then return end
 
@@ -212,11 +224,26 @@ end
 
 function M.move_flow(dir)
     local ws = hl.get_active_workspace()
-    if not ws or ws.tiled_layout ~= "scrolling" then return end
+    if not ws then return end
     local cur = hl.get_active_window()
-    if not cur then return end
+    if not cur or cur.floating then return end
 
     local portrait = policy.is_portrait(ws.monitor)
+
+    if ws.tiled_layout == "dwindle" then
+        local tiled = ordered_tiled_windows(ws)
+        for i, win in ipairs(tiled) do
+            if win.address == cur.address then
+                local target = tiled[dir == "back" and i - 1 or i + 1]
+                if target then
+                    hl.dispatch(hl.dsp.window.swap({ target = "address:" .. target.address }))
+                end
+                break
+            end
+        end
+        return
+    end
+    if ws.tiled_layout ~= "scrolling" then return end
 
     local primary, secondary, anti_primary
     if dir == "back" then
@@ -250,7 +277,7 @@ function M.move_flow(dir)
 
     if #seg > 1 then
         hl.dispatch(hl.dsp.layout(dir == "back" and "consume_or_expel prev" or "consume_or_expel next"))
-        hl.dispatch(hl.dsp.layout(string.format("colresize %.3f", policy.column_width(portrait))))
+        colresize(policy.column_width(portrait))
         return
     end
 

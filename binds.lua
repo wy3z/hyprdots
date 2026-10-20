@@ -22,7 +22,7 @@ hl.bind("SUPER + V", hl.dsp.exec_cmd("noctalia msg panel-toggle clipboard"),
 hl.bind("SUPER + comma", hl.dsp.exec_cmd("noctalia msg settings-toggle"),
     { description = "Open shell settings" })
 
-hl.bind("SUPER + J", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center notifications"),
+hl.bind("SUPER + SHIFT + J", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center notifications"),
     { description = "Open notifications panel" })
 hl.bind("SUPER + M", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center system"),
     { description = "Open system panel" })
@@ -86,6 +86,12 @@ hl.bind("SUPER + ALT + F", hl.dsp.window.fullscreen({ mode = "maximized", action
     { description = "Maximize window (toggle)" })
 hl.bind("SUPER + SHIFT + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }),
     { description = "Fullscreen window (toggle)" })
+hl.bind("SUPER + J", function()
+    local ws = hl.get_active_workspace()
+    if ws and ws.tiled_layout == "dwindle" then
+        hl.dispatch(hl.dsp.layout("togglesplit"))
+    end
+end, { description = "Toggle dwindle split orientation" })
 
 local directions = {
     { keys = { "A", "Left" }, name = "left", move = "l", x = -50, y = 0, resize = "narrower (50px)" },
@@ -139,7 +145,7 @@ hl.bind("SUPER + SHIFT + CTRL + Right", function()
     scrolling.preserve_width(function() hl.dispatch(hl.dsp.window.move({ monitor = "r" })) end)
 end, { description = "Move window to the monitor on the right" })
 
-hl.bind("SUPER + F", scrolling.col_maximize, { submap_universal = true, description = "Maximize column width (toggle)" })
+hl.bind("SUPER + F", scrolling.col_maximize, { submap_universal = true, description = "Maximize window or column (toggle)" })
 hl.bind("SUPER + Z", function()
     scrolling.col_step("down")
 end, { submap_universal = true, description = "Shrink column to previous width preset" })
@@ -160,17 +166,17 @@ hl.bind("SUPER + ALT + mouse_down", hl.dsp.window.resize({ x = -100, y = 0, rela
 
 hl.bind("SUPER + bracketleft", function()
     scrolling.move_flow("back")
-end, { description = "Move window back in the scroll flow" })
+end, { description = "Move window back" })
 hl.bind("SUPER + bracketright", function()
     scrolling.move_flow("forward")
-end, { description = "Move window forward in the scroll flow" })
+end, { description = "Move window forward" })
 
 hl.bind("SUPER + SHIFT + mouse_up", function()
     scrolling.move_flow("back")
-end, { description = "Move window back in the scroll flow" })
+end, { description = "Move window back" })
 hl.bind("SUPER + SHIFT + mouse_down", function()
     scrolling.move_flow("forward")
-end, { description = "Move window forward in the scroll flow" })
+end, { description = "Move window forward" })
 
 hl.bind("SUPER + L", function()
     scrolling.toggle_layout()
@@ -223,17 +229,17 @@ hl.bind("SUPER + mouse:274", windows.pop,
     { mouse = true, description = "Float window out, centred and pinned" })
 
 hl.bind("SUPER + CTRL + mouse:274", scrolling.col_maximize,
-    { mouse = true, description = "Maximize column width (toggle)" })
+    { mouse = true, description = "Maximize window or column (toggle)" })
 hl.bind("SUPER + ALT + mouse:274", function()
     scrolling.col_step("up", true)
 end, { mouse = true, description = "Cycle column width presets" })
 
 hl.bind("SUPER + mouse:275", function()
     scrolling.move_flow("forward")
-end, { mouse = true, description = "Move window forward in the scroll flow" })
+end, { mouse = true, description = "Move window forward" })
 hl.bind("SUPER + mouse:276", function()
     scrolling.move_flow("back")
-end, { mouse = true, description = "Move window back in the scroll flow" })
+end, { mouse = true, description = "Move window back" })
 
 hl.bind("SUPER + mouse_down", function()
     scrolling.wheel_focus("up")

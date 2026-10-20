@@ -80,7 +80,7 @@ hl.animation({
 
 local ws_anim = {
     leaf = "workspaces",
-    enabled = true,
+    enabled = false,
     speed = 1,
     spring = "niriWorkspace",
     style = "slidevert",
