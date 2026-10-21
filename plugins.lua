@@ -18,8 +18,8 @@ local scrolloverview = hl.plugin and hl.plugin.scrolloverview
 if scrolloverview then
     scrolloverview.configure({
         gesture_distance = 300,
-        scale = 0.4,
-        workspace_gap = 60,
+        scale = 0.5,
+        workspace_gap = 30,
         layout = "auto",
         cross_monitor_drag = true,
         wallpaper = 2,
