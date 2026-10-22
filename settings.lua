@@ -33,7 +33,8 @@ local config = {
         precise_mouse_move           = false,
     },
     decoration = {
-        rounding = 6,
+        rounding = 8,
+        rounding_power = 4,
         border_part_of_window = false,
         blur = {
             enabled = true,
