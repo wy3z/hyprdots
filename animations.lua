@@ -3,13 +3,14 @@ local policy = require("scripts.monitor_policy")
 hl.curve("easeOutQuint", { type = "bezier", points = { { 0.23, 1 }, { 0.32, 1 } } })
 hl.curve("linear", { type = "bezier", points = { { 0, 0 }, { 1, 1 } } })
 local SPEED = 1.35
+local DURATION_SCALE = 1.15
 
 local function duration(ds)
-    return math.floor(ds / SPEED * 100 + 0.5) / 100
+    return math.floor(ds / SPEED * 100 + 0.5) / 100 * DURATION_SCALE
 end
 
 local function spring(name, stiffness)
-    local k = stiffness * SPEED * SPEED
+    local k = stiffness * SPEED * SPEED / DURATION_SCALE ^ 2
     hl.curve(name, {
         type = "spring",
         mass = 1,
@@ -34,7 +35,7 @@ hl.curve("niriQuad", {
     },
 })
 
-spring("niriWorkspace", 8500 / 1.15 ^ 2)
+spring("niriWorkspace", 8500)
 spring("niriOverview", 4800 / 1.2 ^ 2)
 
 hl.animation({
@@ -62,7 +63,7 @@ hl.animation({
 hl.animation({
     leaf = "windowsOut",
     enabled = true,
-    speed = 1,
+    speed = DURATION_SCALE,
     bezier = "linear",
     style = "popin 87%",
 })
@@ -138,28 +139,28 @@ hl.timer(sync_ws_anim_axis, { timeout = 500, type = "oneshot" })
 hl.animation({
     leaf = "layersIn",
     enabled = true,
-    speed = 0.3,
+    speed = 0.3 * DURATION_SCALE,
     bezier = "niriExpo",
 })
 
 hl.animation({
     leaf = "layersOut",
     enabled = true,
-    speed = 0.5,
+    speed = 0.5 * DURATION_SCALE,
     bezier = "niriQuad",
 })
 
 hl.animation({
     leaf = "fadeLayersIn",
     enabled = true,
-    speed = 0.3,
+    speed = 0.3 * DURATION_SCALE,
     bezier = "niriExpo",
 })
 
 hl.animation({
     leaf = "fadeLayersOut",
     enabled = true,
-    speed = 0.5,
+    speed = 0.5 * DURATION_SCALE,
     bezier = "niriQuad",
 })
 
