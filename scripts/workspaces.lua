@@ -24,14 +24,16 @@ end
 
 
 function M.move(idx)
-    scrolling.preserve_width(function()
-        local n = tostring(idx)
-        local smw = hl.plugin and hl.plugin.split_monitor_workspaces
-        if smw then
-            smw.move_to_workspace(n)
-        else
-            hl.dispatch(hl.dsp.window.move({ workspace = idx }))
-        end
+    animations.animate_workspace_move(function()
+        scrolling.preserve_width(function()
+            local n = tostring(idx)
+            local smw = hl.plugin and hl.plugin.split_monitor_workspaces
+            if smw then
+                smw.move_to_workspace(n)
+            else
+                hl.dispatch(hl.dsp.window.move({ workspace = idx }))
+            end
+        end)
     end)
 end
 
@@ -88,13 +90,14 @@ function M.move_to_empty()
 
     for target = first, first + policy.workspaces_per_monitor - 1 do
         if not occupied[target] then
-            sync_animation_axis()
-            scrolling.preserve_width(function()
-                hl.dispatch(hl.dsp.window.move({
-                    workspace = target,
-                    window = window,
-                    follow = true,
-                }))
+            animations.animate_workspace_move(function()
+                scrolling.preserve_width(function()
+                    hl.dispatch(hl.dsp.window.move({
+                        workspace = target,
+                        window = window,
+                        follow = true,
+                    }))
+                end)
             end)
             return
         end

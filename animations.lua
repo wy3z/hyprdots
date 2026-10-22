@@ -34,7 +34,7 @@ hl.curve("niriQuad", {
     },
 })
 
-spring("niriWorkspace", 8500)
+spring("niriWorkspace", 8500 / 1.15 ^ 2)
 spring("niriOverview", 4800 / 1.2 ^ 2)
 
 hl.animation({
@@ -101,6 +101,25 @@ local function apply_ws_anim_axis(m)
     hl.animation(ws_anim)
 end
 
+local move_timer
+local function reset_workspace_animation(m)
+    if move_timer then
+        move_timer:set_enabled(false)
+        move_timer = nil
+    end
+    ws_anim.enabled = false
+    apply_ws_anim_axis(m)
+end
+
+local function animate_workspace_move(move)
+    if hl.get_current_submap() == "scrolloverview" then return move() end
+    if move_timer then move_timer:set_enabled(false) end
+    ws_anim.enabled = true
+    apply_ws_anim_axis()
+    move_timer = hl.timer(reset_workspace_animation, { timeout = 300, type = "oneshot" })
+    move()
+end
+
 local retry_timer
 local function sync_ws_anim_axis(m)
     apply_ws_anim_axis(m)
@@ -152,5 +171,6 @@ hl.animation({
 })
 
 return {
-    sync_workspace_axis = apply_ws_anim_axis,
+    sync_workspace_axis = reset_workspace_animation,
+    animate_workspace_move = animate_workspace_move,
 }
