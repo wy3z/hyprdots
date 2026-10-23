@@ -55,6 +55,8 @@ hl.bind("SUPER + CTRL + N", hl.dsp.exec_cmd("noctalia msg nightlight-force-toggl
 
 hl.bind("ALT + Space", voxtype.press, { description = "Start dictation (tap or hold)" })
 hl.bind("ALT + Space", voxtype.release, { release = true, description = "Stop dictation (on release)" })
+hl.bind("SUPER + SHIFT + M", hl.dsp.exec_cmd("~/.local/bin/voxtype-meeting-toggle"),
+    { description = "Start/stop meeting transcription (Voxtype)" })
 
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("noctalia msg volume-up"),
     { locked = true, repeating = true, description = "Raise volume" })

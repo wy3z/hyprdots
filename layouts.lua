@@ -1,7 +1,7 @@
 local policy = require("scripts.monitor_policy")
 local directions = {}
 
-local function apply_directions()
+local function apply_directions(reset)
     local current_layouts = {}
     for _, workspace in ipairs(hl.get_workspaces()) do
         current_layouts[workspace.id] = workspace.tiled_layout
@@ -11,12 +11,15 @@ local function apply_directions()
         local base = policy.monitor_workspace_base(monitor)
         if base then
             local direction = policy.is_portrait(monitor) and "down" or "right"
-            if directions[base] ~= direction then
+            local previous = directions[base]
+            if previous ~= direction then
                 directions[base] = direction
+                local default = direction == "down" and "scrolling" or "dwindle"
                 for i = 1, policy.workspaces_per_monitor do
+                    -- Keep toggled layouts across reloads, but reset them when orientation changes.
                     hl.workspace_rule({
                         workspace = tostring(base + i),
-                        layout = current_layouts[base + i] or (direction == "down" and "scrolling" or "dwindle"),
+                        layout = not reset and previous == nil and current_layouts[base + i] or default,
                         layout_opts = { direction = direction },
                         animation = direction == "down" and "slide" or "slidevert",
                     })
@@ -37,10 +40,14 @@ end
 
 apply_directions()
 
-hl.on("hyprland.start", apply_directions)
-hl.on("workspace.active", apply_directions)
+hl.on("hyprland.start", function()
+    directions = {}
+    apply_directions(true)
+end)
+local function sync_directions() apply_directions() end
+hl.on("workspace.active", sync_directions)
 for _, event in ipairs({ "monitor.added", "monitor.removed", "monitor.layout_changed" }) do
-    hl.on(event, apply_directions)
+    hl.on(event, sync_directions)
 end
 
 hl.config({
